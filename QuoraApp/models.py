@@ -8,7 +8,7 @@ class Member(models.Model):
     phone = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
     address=models.CharField(max_length=200,null=True)
-    profile_pic = models.ImageField( null=True, blank=True)
+    profile_pic = models.ImageField(upload_to='profiles/', null=True, blank=True, default='default_profile.png')
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
 
