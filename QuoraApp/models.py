@@ -41,6 +41,22 @@ class Vote(models.Model):
     answer=models.ForeignKey(Answer,null=True,on_delete=models.SET_NULL)
     vote=models.IntegerField()#0 -no vote 1-up vote 2-down vote
     votedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
+
+class Employee(models.Model):
+    member=models.ForeignKey(Member, on_delete=models.CASCADE)
+    company=models.CharField(max_length=200, null=True)
+    job_post=models.CharField(max_length=200, null=True)
+
+class Student(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    university = models.CharField(max_length=200, null=True)
+    degree = models.CharField(max_length=200, null=True)
+    branch = models.CharField(max_length=200, null=True)
+
+class Following(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
     
     
     
