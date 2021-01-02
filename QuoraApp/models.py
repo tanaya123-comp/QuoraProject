@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from tinymce.models import HTMLField
 
 # Create your models here.
 class Member(models.Model):
@@ -32,7 +33,7 @@ class Question(models.Model):
 class Answer(models.Model):
     question=models.ForeignKey(Question,null=True,on_delete=models.SET_NULL)
     tag=models.ForeignKey(Tag,null=True,on_delete=models.SET_NULL)
-    answer=models.TextField()
+    answer=HTMLField()
     answeredBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
     creationTime=models.DateTimeField(auto_now_add=True)
     
