@@ -5,10 +5,10 @@ from tinymce.models import HTMLField
 # Create your models here.
 class Member(models.Model):
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    phone = models.CharField(max_length=200, null=True)
-    email = models.CharField(max_length=200, null=True)
-    address=models.CharField(max_length=200,null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    phone = models.CharField(max_length=200, null=True, blank=True)
+    email = models.CharField(max_length=200, null=True, blank=True)
+    address=models.CharField(max_length=200,null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profiles/', null=True, blank=True, default='default_profile.png')
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -45,14 +45,14 @@ class Vote(models.Model):
 
 class Employee(models.Model):
     member=models.ForeignKey(Member, on_delete=models.CASCADE)
-    company=models.CharField(max_length=200, null=True)
-    job_post=models.CharField(max_length=200, null=True)
+    company=models.CharField(max_length=200, null=True, blank=True)
+    job_post=models.CharField(max_length=200, null=True, blank=True)
 
 class Student(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    university = models.CharField(max_length=200, null=True)
-    degree = models.CharField(max_length=200, null=True)
-    branch = models.CharField(max_length=200, null=True)
+    university = models.CharField(max_length=200, null=True, blank=True)
+    degree = models.CharField(max_length=200, null=True, blank=True)
+    branch = models.CharField(max_length=200, null=True, blank=True)
 
 class Following(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
