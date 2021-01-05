@@ -1,6 +1,7 @@
 from django import forms
-from tinymce import TinyMCE
-from .models import Answer
+from tinymce.widgets import TinyMCE
+from .models import *
+from django.forms import ModelForm
 
 
 class TinyMCEWidget(TinyMCE):
@@ -18,3 +19,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = '__all__'
+        
+
+class CreateUserForm(ModelForm):
+    class Meta:
+        model=Member
+        fields=('user','name','email')

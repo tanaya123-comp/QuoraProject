@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	{% load static %}
+    <link rel="stylesheet" href="{% static 'css/register_css.css' %}"/>
+</head>
+<body class="form-v8">
+    <div class="page-content">
+        <div class="form-v8-content">
+            <div class="wrapper-form">
+
+                <!-- Sign-up and Sign-in tabs -->
+                <div class="tab">
+                    <div class="tab-inner">
+                        <button class="tablinks active" id="btn-sign-up">Sign Up</button>
+                    </div>
+                    <div class="tab-inner">
+                        <button class="tablinks" id="btn-sign-in">Sign In</button>
+                    </div>
+                </div>
+
+                <!-- Sign-Up form -->
+                <form class="form-detail" action="" method="POST">
+					{% csrf_token %}
+                    <div class="tabcontent" id="content-sign-up">
+                        <div class="form-row">
+							<label class="form-row-inner">
+								<input type="text" name="full_name" id="full_name" class="input-text" required>
+								<span class="label">Username</span>
+		  						<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row">
+							<label class="form-row-inner">
+								<input type="text" name="your_email" id="your_email" class="input-text" required>
+								<span class="label">E-Mail</span>
+		  						<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row">
+							<label class="form-row-inner">
+								<input type="password" name="password" id="password" class="input-text" required>
+								<span class="label">Password</span>
+								<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row">
+							<label class="form-row-inner">
+								<input type="password" name="comfirm_password" id="comfirm_password" class="input-text" required>
+								<span class="label">Confirm Password</span>
+								<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row-last">
+							<input type="submit" name="register" class="register" value="Register">
+						</div>
+                    </div>
+                </form>
+
+                <!-- Sign-In form -->
+                <form class="form-detail" action="" method="POST">
+					{% csrf_token %}
+					<div class="tabcontent" id="content-sign-in" style="display: none;">
+						<div class="form-row">
+							<label class="form-row-inner">
+								<input type="text" name="full_name_1" id="full_name_1" class="input-text" required>
+								<span class="label">Username</span>
+		  						<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row">
+							<label class="form-row-inner">
+								<input type="password" name="password_1" id="password_1" class="input-text" required>
+								<span class="label">Password</span>
+								<span class="border"></span>
+							</label>
+						</div>
+						<div class="form-row-last">
+							<input type="submit" name="register" class="register" value="Sign In">
+						</div>
+					</div>
+				</form>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    $('#btn-sign-up').click(function() {
+
+        // 1. fade out the sign-IN form
+        // 2. fade in the sign-UP form
+        // 3. Make the SIGN-UP Link active
+
+        $('#content-sign-in').slideUp(500, function() {
+            $('#btn-sign-up').addClass('active');
+            $('#btn-sign-in').removeClass('active');
+            $('#content-sign-up').slideDown(500, function(){
+            });
+        })
+
+
+    });
+
+    $('#btn-sign-in').click(function() {
+
+        // 1. fade out the sign-UP form
+        // 2. fade in the sign-IN form
+        // 3. Make the sign-in link active
+
+        $('#content-sign-up').slideUp(500, function() {
+            $('#btn-sign-in').addClass('active');
+            $('#btn-sign-up').removeClass('active');
+            $('#content-sign-in').slideDown(500, function() {
+            })
+        })
+    })
+</script>
+</html>

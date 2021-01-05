@@ -1,0 +1,52 @@
+.outer-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.tagheader img{
+    height: 200px;
+
+}
+
+.tagheader {
+    width:700px;
+    margin-right: 30px;
+}
+
+
+.tagquestion img{
+    height: 50px;
+    width:50px;
+}
+
+.tagheader {
+    display: flex;
+    flex-direction: column;
+}
+
+.tagheaderuser {
+    display: flex;
+    height:100px;
+}
+
+.tagheaderuser img{
+    height: 50px;
+    width: 50px;
+}
+
+.headermiddle img {
+    height:50px;
+    width:50px;
+}
+
+.tagmiddle img{
+    height:50px;
+    width:50px;
+}
+
+
+    .bottommiddle img{
+        height: 40px;
+        width: 60px;
+    }

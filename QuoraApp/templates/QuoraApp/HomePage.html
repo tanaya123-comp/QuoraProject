@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+
+        </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/homepage.css' %}" type="text/css"/>
+    </head>
+    <body>
+        <!-- horizontal navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Quora</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'AnswerPage' %}">Answer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Add Question</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                  </li>
+
+              </ul>
+              <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+                <p>Welcome {{request.user.username}}</p>
+            </div>
+          </nav>
+
+          <div class="outer-container">
+              <nav class="navbar navbar-light bg-light col-lg-2 leftbar">
+                    <ul class="navbar-nav">
+                        {% for i in tag %}
+                        <li class="nav-item tag">
+                            <img alt="tag" src="sampletag.jfif"/>
+                            <a class="nav-link" href="{% url 'TagPage' %}">{{i.name}}</a>
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+
+              </nav>
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-header headermiddle">
+                    <img src="default_profile.png"/>
+                    {{request.user.username}}
+
+                  </div>
+                  <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                      <p>What is your Question or Link?</p>
+                    </blockquote>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header tagmiddle">
+                    <img src="Pizza.jpg"/>
+                    FOOD
+                  </div>
+                  <div class="card-body ques">
+                    <h5 class="card-title">Is pizza bad for your cholesterol?</h5>
+                    <p class="card-text">Too much saturated fat?
+                      The other major concern about pizza is the cholesterol-raising saturated fat. But a slice of regular cheese pizza averages only about two to three grams of saturated fat. A total of four to six grams of saturated fat in two slices of this kind of pizza is actually not much considering the recommended limits for saturated fat are 18 to 22 grams a day, or 12 to 17 grams for those with high blood cholesterol.</p>
+                      <img src="Pizza.jpg"/>
+                   <div class="bottommiddle">
+                     <img src="upvotedownvote.jpg"/>
+                     <img src="share.jfif"/>
+                     <img src="comment.png"/>
+                   </div>
+                  </div>
+                </div>
+              </div>
+              <nav class="navbar navbar-light bg-light col-lg-2 rightbar">
+                <ul class="navbar-nav ">
+                    {% for i in tag %}
+                    <li class="nav-item tag">
+                      <img alt="tag" src="sampletag.jfif"/>
+                        <a class="nav-link" href="#">{{i.name}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+          </nav>
+
+
+
+          </div>
+
+
+
+    </body>
+
+</html>
