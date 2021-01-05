@@ -4,15 +4,20 @@ from django.contrib.auth.models import Group
 from .models import Member,Tag
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
+from django.contrib.auth.decorators import login_required
+from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, only_normal_users_allowed
 # Create your views here.
 
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
 def HomePage(request):
     tag=Tag.objects.all()
     dictionary={'tag':tag}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
-
+@only_unauthenticated_users_allowed
 def Register(request):
     if request.method=="POST":
         name=request.POST.get('full_name')
@@ -48,9 +53,37 @@ def Register(request):
 
     return render(request,'QuoraApp/register.html')
 
+
+def Logout(request):
+    logout(request)
+    return redirect('HomePage')
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
 def AnswerPage(request):
     return render(request,'QuoraApp/AnswerPage.html')
 
 
+@login_required(login_url='Register')
+@only_normal_users_allowed
 def TagPage(request):
     return render(request,'QuoraApp/Tag.html')
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def AskQuestion(request):
+    return render(request, 'QuoraApp/AskQuestion.html')
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def IndividualQuestion(request):
+    return render(request, 'QuoraApp/IndividualQuestion.html')
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def Profile(request):
+    return render(request, 'QuoraApp/Profile.html')

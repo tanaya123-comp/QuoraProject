@@ -1,13 +1,20 @@
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import HomePage,Register,AnswerPage,TagPage
+from .views import HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion, IndividualQuestion, Profile
 
 urlpatterns = [
-    path('homepage',HomePage,name="HomePage"),
+    path('',HomePage,name="HomePage"),
     path('tinymce/', include('tinymce.urls')),
-    path('register/',Register),
+    path('register/',Register, name="Register"),
     path('answerpage/',AnswerPage,name="AnswerPage"),
     path('tagpage/',TagPage,name="TagPage"),
+    path('logout/', Logout, name='Logout'),
+    path('askquestion/', AskQuestion, name='AskQuestion'),
+
+    # For now, we are keeping individual question url simple
+    # Afterwards, we will change it to something like this: question/1 or question/question_name
+    path('individualques/', IndividualQuestion),
+    path('profile/', Profile, name='Profile'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

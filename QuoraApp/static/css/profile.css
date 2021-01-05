@@ -1,0 +1,69 @@
+body {
+    background-color: #e2e8f0;
+}
+.outer-container{
+    display: flex;
+    margin-top: 100px;
+    width:100%;
+    height:100%;
+}
+.outer-container-profile{
+    width:100%;
+    height:100%;
+    margin-top: 3rem;
+}
+.wrapper-div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.card-img-top {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    margin: 0.5rem;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.card-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+}
+.individual-detail-edu {
+    height: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5rem;
+}
+.individual-detail {
+    height: 40px;
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5rem;
+}
+.tag-name, .tag-value {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+.tag-value {
+    color: rgba(0, 0, 0, 0.5);
+}
+.more-stats {
+    display: flex;
+}

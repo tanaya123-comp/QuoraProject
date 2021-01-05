@@ -28,10 +28,10 @@
                   <a class="nav-link" href="{% url 'AnswerPage' %}">Answer</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Add Question</a>
+                    <a class="nav-link" href="{% url 'AskQuestion'%}">Add Question</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link" href="{% url 'Profile' %}">Profile</a>
                   </li>
 
               </ul>
@@ -40,6 +40,7 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
               </form>
                 <p>Welcome {{request.user.username}}</p>
+                <span><a class="btn btn-danger" href="{% url 'Logout' %}">Logout</a></span>
             </div>
           </nav>
 
@@ -65,7 +66,7 @@
                   </div>
                   <div class="card-body">
                     <blockquote class="blockquote mb-0">
-                      <p>What is your Question or Link?</p>
+                      <a href="{% url 'AskQuestion' %}">What is your Question or Link?</a>
                     </blockquote>
                   </div>
                 </div>
