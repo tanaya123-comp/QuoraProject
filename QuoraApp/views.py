@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from .forms import CreateUserForm
 from django.contrib.auth.models import Group
-from .models import Member,Tag
+from .models import Member,Tag,Question,Answer
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,8 @@ from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, 
 @only_normal_users_allowed
 def HomePage(request):
     tag=Tag.objects.all()
-    dictionary={'tag':tag}
+    answers=Answer.objects.all()
+    dictionary={'tag':tag,'answers':answers}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
