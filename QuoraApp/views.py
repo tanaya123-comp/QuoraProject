@@ -68,8 +68,19 @@ def AnswerPage(request):
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
-def TagPage(request):
-    return render(request,'QuoraApp/Tag.html')
+def TagPage(request,pk):
+    tag=Tag.objects.get(id=pk)
+    questions=Question.objects.filter(tag=tag)
+    print(questions)
+    answers={}
+    j=0;
+    for  i in questions:
+        answer={j:list(Answer.objects.filter(question=i))}
+        j=j+1
+        answers.update(answer)
+    print(answers)
+    dictionary={'tag':tag,'questions':questions,'answers':answers}
+    return render(request,'QuoraApp/Tag.html',dictionary)
 
 
 @login_required(login_url='Register')

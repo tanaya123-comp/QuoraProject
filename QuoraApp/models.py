@@ -4,6 +4,7 @@ from tinymce.models import HTMLField
 
 # Create your models here.
 class Member(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=200, null=True, blank=True)
@@ -17,6 +18,7 @@ class Member(models.Model):
         return self.name
 
 class Tag(models.Model):
+    id = models.AutoField(primary_key=True)
     name=models.CharField(max_length=200,null=True)
     description=models.CharField(max_length=200,null=True)
 
@@ -24,6 +26,7 @@ class Tag(models.Model):
         return self.name
 
 class Question(models.Model):
+    id = models.AutoField(primary_key=True)
     askedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
     tag=models.ForeignKey(Tag,null=True,on_delete=models.SET_NULL)
     description=models.TextField()
@@ -31,6 +34,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+    id = models.AutoField(primary_key=True)
     question=models.ForeignKey(Question,null=True,on_delete=models.SET_NULL)
     tag=models.ForeignKey(Tag,null=True,on_delete=models.SET_NULL)
     answer=HTMLField()
@@ -39,6 +43,7 @@ class Answer(models.Model):
     
     
 class Vote(models.Model):
+    id = models.AutoField(primary_key=True)
     answer=models.ForeignKey(Answer,null=True,on_delete=models.SET_NULL)
     vote=models.IntegerField()#0 -no vote 1-up vote 2-down vote
     votedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)

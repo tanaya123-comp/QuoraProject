@@ -8,7 +8,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('register/',Register, name="Register"),
     path('answerpage/',AnswerPage,name="AnswerPage"),
-    path('tagpage/',TagPage,name="TagPage"),
+    path('tagpage/<str:pk>/',TagPage,name="TagPage"),
     path('logout/', Logout, name='Logout'),
     path('askquestion/', AskQuestion, name='AskQuestion'),
 

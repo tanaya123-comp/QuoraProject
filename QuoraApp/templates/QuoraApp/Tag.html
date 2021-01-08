@@ -9,8 +9,8 @@
               <!-- Tag description -->
                 <img class="card-img-top" src="sampletag.jfif" alt="Card image cap">
                 <div class="card-body">
-                  <h5 class="card-title">Computer Science</h5>
-                  <p class="card-text">A space for those who love computer science</p>
+                  <h5 class="card-title">{{tag.name}}</h5>
+                  <p class="card-text">{{tag.description}}</p>
                   <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 </div>
 
@@ -21,14 +21,15 @@
                   </div>
 
                   <!-- Question description -->
+                    {% for question in questions %}
                   <div class="card">
                     <div class="card-header headermiddle">
                       <img src="default_profile.png"/>
-                      Tanaya Wankar asked 3 Jan 2020
+                      {{question.askedBy.name}} {{question.creationTime}}
                     </div>
                     <div class="card-body">
                       <blockquote class="blockquote mb-0">
-                        <h5 class="card-title">What is the difference between tier 1 and tier 3 college students in India?</h5>
+                        <h5 class="card-title">{{question.description}}</h5>
                       </blockquote>
                     </div>
                   </div>
@@ -54,6 +55,7 @@
                      </div>
                     </div>
                   </div>
+                {% endfor %}
 
 
           </div>

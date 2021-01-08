@@ -6,7 +6,7 @@
                         {% for i in tag %}
                         <li class="nav-item tag">
                             <img alt="tag" src="sampletag.jfif"/>
-                            <a class="nav-link" href="{% url 'TagPage' %}">{{i.name}}</a>
+                            <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
                         </li>
                         {% endfor %}
 
@@ -35,7 +35,6 @@
                   <div class="card-body ques">
                     <h5 class="card-title">{{i.question.description}}</h5>
                     <p class="card-text">{{i.answer|safe}}</p>
-                      <img src="Pizza.jpg"/>
                    <div class="bottommiddle">
                      <img src="upvotedownvote.jpg"/>
                      <img src="share.jfif"/>
@@ -52,7 +51,7 @@
                     {% for i in tag %}
                     <li class="nav-item tag">
                       <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="{% url 'TagPage' %}">{{i.name}}</a>
+                        <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
                     </li>
                     {% endfor %}
                 </ul>
