@@ -48,11 +48,17 @@ class Employee(models.Model):
     company=models.CharField(max_length=200, null=True, blank=True)
     job_post=models.CharField(max_length=200, null=True, blank=True)
 
+    def __str__(self):
+        return self.member.name
+
 class Student(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     university = models.CharField(max_length=200, null=True, blank=True)
     degree = models.CharField(max_length=200, null=True, blank=True)
     branch = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.member.name
 
 class Following(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
-from .forms import CreateUserForm
+from .forms import CreateUserForm, ProfileForm, EmployeeForm, StudentForm
 from django.contrib.auth.models import Group
-from .models import Member,Tag,Question,Answer
+from .models import Member,Tag,Question,Answer, Employee, Student
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
@@ -87,4 +87,36 @@ def IndividualQuestion(request):
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def Profile(request):
-    return render(request, 'QuoraApp/Profile.html')
+    profile = request.user.member
+    form = ProfileForm(instance=profile)
+
+    employee_detail = Employee.objects.filter(member__exact=profile)
+    student_detail = Student.objects.filter(member__exact=profile)
+
+    role = 'None'
+    qualification_form = None
+
+    if len(employee_detail):
+        role = 'Employee'
+        qualification_form = EmployeeForm(instance=employee_detail[0])
+    elif len(student_detail):
+        role = 'Student'
+        qualification_form = StudentForm(instance=student_detail[0])
+
+    if request.method == 'POST':
+        query_dict = request.POST
+        if 'name' in query_dict:
+            form = ProfileForm(request.POST, request.FILES, instance=profile)
+        elif 'university' in query_dict:
+            form = StudentForm(request.POST, instance=student_detail[0])
+        elif 'company' in query_dict:
+            form = EmployeeForm(request.POST, instance=employee_detail[0])
+        if form.is_valid():
+            form.save()
+            return redirect('Profile')
+    context = {
+        'form': form,
+        'role': role,
+        'q_form': qualification_form,
+    }
+    return render(request, 'QuoraApp/Profile.html', context)

@@ -25,3 +25,24 @@ class CreateUserForm(ModelForm):
     class Meta:
         model=Member
         fields=('user','name','email')
+
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Member
+        fields = '__all__'
+        exclude = ['user']
+
+
+class EmployeeForm(ModelForm):
+    class Meta:
+        model = Employee
+        fields = '__all__'
+        exclude = ['member']
+
+
+class StudentForm(ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+        exclude = ['member']
