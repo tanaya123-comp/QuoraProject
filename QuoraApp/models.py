@@ -27,10 +27,13 @@ class Tag(models.Model):
 
 class Question(models.Model):
     id = models.AutoField(primary_key=True)
-    askedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
+    askedBy=models.ForeignKey(Member,null=True, blank=True, on_delete=models.SET_NULL)
     tag=models.ForeignKey(Tag,null=True,on_delete=models.SET_NULL)
-    description=models.TextField()
+    description=models.CharField(max_length=500)
     creationTime=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.description
 
 
 class Answer(models.Model):
@@ -53,11 +56,17 @@ class Employee(models.Model):
     company=models.CharField(max_length=200, null=True, blank=True)
     job_post=models.CharField(max_length=200, null=True, blank=True)
 
+    def __str__(self):
+        return self.member.name
+
 class Student(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     university = models.CharField(max_length=200, null=True, blank=True)
     degree = models.CharField(max_length=200, null=True, blank=True)
     branch = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.member.name
 
 class Following(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)

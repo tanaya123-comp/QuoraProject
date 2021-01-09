@@ -11,13 +11,20 @@
                     <li>Double-check grammar and spelling</li>
                 </ul>
             </div>
-            <div class="card-body">
-              <p class="card-text question-text">
-                  <input type="text" class="question-text-input" placeholder="Start your Question with 'Why', 'What', 'How', etc."/>
-              </p>
-              <p class="card-text question-text">
-                <input type="text" class="question-text-input" placeholder="Optional: Include a link that gives context"/>
-              </p>
-            </div>
+            <form method="POST" class="card-body">
+                {% csrf_token %}
+                <p class="card-text question-text">
+                  {{ form.description }}
+                </p>
+                <hr />
+                <div class="individual-detail-edu">
+                    <h6 class="tag-name col-lg-4">Add Tag</h6>
+                        {{ form.tag }}
+                </div>
+                <hr />
+                <div class="individual-detail submit-btn">
+                    <button type="submit" class="btn btn-primary" style="width: 300px;">Ask Question</button>
+                </div>
+            </form>
           </div>
 {% endblock %}
