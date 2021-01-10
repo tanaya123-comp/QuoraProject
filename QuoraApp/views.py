@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
 from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, only_normal_users_allowed
+from .forms import PostForm,TinyMCEWidget
 # Create your views here.
 
 
@@ -63,24 +64,38 @@ def Logout(request):
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def AnswerPage(request):
-    return render(request,'QuoraApp/AnswerPage.html')
+    answers=Answer.objects.all()
+    questions=Question.objects.all()
+    question=[]
+    for i in questions:
+        x=0
+        for j in answers:
+            if j.question==i :
+                x=1
+
+        if x==0:
+            question.append(i)
+
+
+
+    return render(request,'QuoraApp/AnswerPage.html',{'questions':question,'form':form})
 
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def TagPage(request,pk):
     tag=Tag.objects.get(id=pk)
-    questions=Question.objects.filter(tag=tag)
-    print(questions)
-    answers={}
-    j=0;
-    for  i in questions:
-        answer={j:list(Answer.objects.filter(question=i))}
-        j=j+1
-        answers.update(answer)
+    answers=Answer.objects.filter(tag=tag)
     print(answers)
-    dictionary={'tag':tag,'questions':questions,'answers':answers}
-    return render(request,'QuoraApp/Tag.html',dictionary)
+    # questionsqueryset=Question.objects.filter(tag=tag)
+    # questions=[]
+    # for  i in questionsqueryset:
+    #     questions.append(i)
+    #     questions.append(Answer.objects.filter(question=i))
+    #
+    # print(questions)
+    # dictionary={'tag':tag,'questions':questions,"length":range(len(questions))}
+    return render(request,'QuoraApp/Tag.html',{'answers':answers})
 
 
 @login_required(login_url='Register')

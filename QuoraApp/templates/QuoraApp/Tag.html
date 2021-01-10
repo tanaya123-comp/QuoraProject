@@ -21,33 +21,31 @@
                   </div>
 
                   <!-- Question description -->
-                    {% for question in questions %}
+                     {% for i in answers %}
                   <div class="card">
                     <div class="card-header headermiddle">
                       <img src="default_profile.png"/>
-                      {{question.askedBy.name}} {{question.creationTime}}
+                         {{i.question.askedBy.name}} {{i.question.creationTime}}
                     </div>
                     <div class="card-body">
                       <blockquote class="blockquote mb-0">
-                        <h5 class="card-title">{{question.description}}</h5>
+                          <h5 class="card-title">{{i.question.description}}</h5>
                       </blockquote>
                     </div>
                   </div>
 
                   <!-- Answer For Question -->
+
                   <div class="card mt-4">
                     <div class="card-header tagmiddle">
                       <img src="default_profile.png"/>
-                      Prathamesh Thombre answered 4 Jan 2020
+                     {{i.answeredBy.name}} {{i.creationTime}}
+
                     </div>
                     <div class="card-body ques">
                       <p class="card-text">
+                        {{i.answer|safe}}
 
-                          The ground reality is colleges differ in various aspects. Some are “tier 1” and some “tier 3”. Let’s take a look at some of the glaring differences between the students of these colleges :
-                          Connections - This is the most obvious one. Students need better alumni to get more opportunities. In tier 1 colleges, this is something which is really stressed upon. Their alumni are at many great positions, and they come in handy whenever needed.
-                          Health and wellness features availability - This is not so stressed upon in Indian context, but many colleges do not have sports fields and other facilities. These contribute to well balanced development of students.
-                          Mentality - Many students develop a inferiority complex or a superiority complex depending on the college they are in. Both of them are equally toxic in the long run. But it gives you a certain level of confidence when you are from a tier 1 college.
-                      </p>
                      <div class="bottommiddle">
                        <img src="upvotedownvote.jpg"/>
                        <img src="share.jfif"/>

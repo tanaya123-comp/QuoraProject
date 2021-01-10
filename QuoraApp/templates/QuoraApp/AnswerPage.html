@@ -18,33 +18,24 @@
                     <div class="card-header headermiddle">
                       <img src="default_profile.png"/>
                       Questions For You
-
                     </div>
+                    {% for i in questions %}
                     <div class="card-body">
                       <blockquote class="blockquote mb-0">
-                        <p style="font-size: 15px;color: grey;">Question added :Movies</p>
-                        <p>What irritates you the most in movies?</p>
+                        <p style="font-size: 15px;color: ">Question added :{{i.tag}}</p>
+                        <p>{{i.description}}</p>
                         <div class="answer">
-
+                        {{form.answer}}
                         </div>
                       </blockquote>
                     </div>
+                    {% endfor %}
                   </div>
-                  <div class="card">
 
-                    <div class="card-body">
-                      <blockquote class="blockquote mb-0">
-                        <p style="font-size: 15px;color: grey;">Question added :Movies</p>
-                        <p>What are the best movies to watch in 2021?</p>
-                        <div class="answer">
+</div>
 
-                        </div>
-                      </blockquote>
-                    </div>
-                  </div>
-              </div>
               <!-- right bar -->
-              <div class="col-sm-2 rightbar">
+              <div class="col-lg-2 rightbar">
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">Add topics you know about</h5>
@@ -53,6 +44,7 @@
                   </div>
                 </div>
               </div>
+
 
 
 
