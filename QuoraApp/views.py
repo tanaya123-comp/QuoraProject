@@ -6,11 +6,11 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
 from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, only_normal_users_allowed
-<<<<<<< HEAD
+
 from .forms import PostForm,TinyMCEWidget
-=======
+
 from django.contrib import messages
->>>>>>> db09d31ceeeb5449e42e78093fbc6c5dba638d52
+
 # Create your views here.
 
 
@@ -83,7 +83,7 @@ def AnswerPage(request):
         if x==0:
             question.append(i)
 
-     form=PostForm()
+    form=PostForm()
 
     return render(request,'QuoraApp/AnswerPage.html',{'questions':question,'form':form})
 
