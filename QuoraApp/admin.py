@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 
-admin.site.register([Member,Tag,Question,Vote])
+admin.site.register([Member,Tag,Question,Vote, Employee, Student, Following])
 
 # Register your models here.
 @admin.register(Answer)

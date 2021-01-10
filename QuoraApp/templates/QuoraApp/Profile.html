@@ -4,95 +4,196 @@
         <!-- Container-body -->
         <div class="outer-container-profile">
 
-            <!-- Wrapping of all 4 divs -->
-            <div class="wrapper-div col-lg-12">
-                
-                <!-- Left side div -->
-                <div class="col-lg-3 mx-1">
-                    <!-- Profile pic + name + bio -->
-                    <div class="card profile-card">
-                        <img src="default_profile.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">John Doe</h5>
-                        <p class="card-text">I am a programmer. My job is to make you jobless</p>
-                        <a href="#" class="btn btn-primary">Update Profile</a>
-                        </div>
-                    </div>
+            <form method="POST" enctype="multipart/form-data" class="wrapper-div col-lg-12">
+            {% csrf_token %}
+                <!-- Profile pic + name + bio -->
+                <div class="col-lg-3 card profile-card mx-1">
+                    <img src="{{request.user.member.profile_pic.url}}"  class="card-img-top"/>
+                    <p class="card-text">{{ form.profile_pic }}</p>
 
-                    <!-- University -->
-                    <div class="card mt-3">
+                    <div class="card-body">
+                    <h4 class="card-title">{{ request.user }}</h4>
+                    <p class="card-text">Date joined: {{request.user.date_joined}}</p>
+                    </div>
+                </div>
+
+                <!-- Name, email and remaining fields -->
+                <div class="col-lg-7 card profile-details mx-1">
+                    <div class="individual-detail">
+                        <h6 class="tag-name col-lg-4">Full Name</h6>
+                        <p class="tag-value col-lg-8">{{form.name}}</p>
+                    </div>
+                    <hr />
+                    <div class="individual-detail">
+                        <h6 class="tag-name col-lg-4">Phone Number</h6>
+                        <p class="tag-value col-lg-8">{{form.phone}}</p>
+                    </div>
+                    <hr />
+                    <div class="individual-detail">
+                        <h6 class="tag-name col-lg-4">Email</h6>
+                        <p class="tag-value col-lg-8">{{form.email}}</p>
+                    </div>
+                    <hr />
+                    <div class="individual-detail">
+                        <h6 class="tag-name col-lg-4">Address</h6>
+                        <p class="tag-value col-lg-8">
+                            {{form.address}}
+                        </p>
+                    </div>
+                    <hr />
+                    <div class="individual-detail submit-btn">
+                        <button type="submit" class="btn btn-primary" style="width: 400px;">Update Profile</button>
+                    </div>
+                </div>
+            </form>
+
+
+            <div class="wrapper-div col-lg-12">
+
+                {% if role == 'Student' %}
+                    <form method="POST" class="col-lg-3 card mx-1" style="margin-top: -30px;">
+                        {% csrf_token %}
                         <h4 style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">Education Details</h4>
                         <div class="individual-detail-edu">
                             <h6 class="tag-name col-lg-4">University</h6>
-                            <p class="tag-value col-lg-8">Pune University</p>
+                            {{q_form.university}}
                         </div>
                         <hr />
                         <div class="individual-detail-edu">
                             <h6 class="tag-name col-lg-4">Degree</h6>
-                            <p class="tag-value col-lg-8">BE</p>
+                            {{q_form.degree}}
                         </div>
                         <hr />
                         <div class="individual-detail-edu">
                             <h6 class="tag-name col-lg-4">Branch</h6>
-                            <p class="tag-value col-lg-8">Computer Engineering</p>
+                            {{q_form.branch}}
                         </div>
                         <hr />
+                        <div class="individual-detail submit-btn">
+                            <button type="submit" class="btn btn-primary" style="width: 300px;">Update Edu Details</button>
+                        </div>
+                    </form>
+
+                {% elif role == 'Employee' %}
+                    <form method="POST" class="col-lg-3 card mx-1" style="margin-top: -30px;">
+                        {% csrf_token %}
+                        <h4 style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">Education Details</h4>
+                        <div class="individual-detail-edu">
+                            <h6 class="tag-name col-lg-4">Company</h6>
+                            {{q_form.company}}
+                        </div>
+                        <hr />
+                        <div class="individual-detail-edu">
+                            <h6 class="tag-name col-lg-4">Job Post</h6>
+                            {{q_form.job_post}}
+                        </div>
+                        <hr />
+                        <div class="individual-detail submit-btn">
+                            <button type="submit" class="btn btn-primary" style="width: 300px;">Update Job Details</button>
+                        </div>
+                    </form>
+
+                {% elif role == 'None' %}
+                <div class="col-lg-3 card mx-1" style="margin-top: -30px;">
+                    <button
+                            type="button" class="btn btn-primary"
+                            data-bs-toggle="modal" data-bs-target="#educationModal"
+                            id="btn-edu-details">Add Educational Details
+                    </button>
+                    <!-- Education Modal -->
+                    <div class="modal fade" id="educationModal" tabindex="-1" aria-labelledby="educationModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <form method="POST" class="modal-content">
+                            {% csrf_token %}
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="educationModalLabel">Your Educational Details</h5>
+
+                          </div>
+                          <div class="modal-body">
+                                <div class="individual-detail-edu">
+                                    <h6 class="tag-name col-lg-4">University</h6>
+                                    {{blank_edu_form.university}}
+                                </div>
+                                <hr />
+                                <div class="individual-detail-edu">
+                                    <h6 class="tag-name col-lg-4">Degree</h6>
+                                    {{blank_edu_form.degree}}
+                                </div>
+                                <hr />
+                                <div class="individual-detail-edu">
+                                    <h6 class="tag-name col-lg-4">Branch</h6>
+                                    {{blank_edu_form.branch}}
+                                </div>
+                                <hr />
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
+
+                    <h4>OR</h4>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-toggle="modal" data-bs-target="#jobModal"
+                            id="btn-job-details">Add Job Details
+                    </button>
+                    <!-- Job Modal -->
+                    <div class="modal fade" id="jobModal" tabindex="-1" aria-labelledby="jobModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <form method="POST" class="modal-content">
+                            {% csrf_token %}
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="jobModalLabel">Your Job Details</h5>
+
+                          </div>
+                          <div class="modal-body">
+                                <div class="individual-detail-edu">
+                                    <h6 class="tag-name col-lg-4">Company</h6>
+                                    {{blank_job_form.company}}
+                                </div>
+                                <hr />
+                                <div class="individual-detail-edu">
+                                    <h6 class="tag-name col-lg-4">Job Post</h6>
+                                    {{blank_job_form.job_post}}
+                                </div>
+                                <hr />
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
                 </div>
 
-                <!-- Right side div -->
-                <div class="col-lg-7 mx-1">
-                    <!-- Name, email and remaining fields -->
-                    <div class="card profile-details">
-                        <div class="individual-detail">
-                            <h6 class="tag-name col-lg-4">Full Name</h6>
-                            <p class="tag-value col-lg-8">Prathamesh Thombre</p>
+                {% endif %}
+
+
+                <!-- Questions, ans, following stats -->
+                <div class="col-lg-7 more-stats mx-1">
+                    <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
+                        <div class="card-header">Following</div>
+                        <div class="card-body">
+                            <h1 class="card-title">15</h1>
+                            <a href="#" class="btn btn-primary">See Tags that you follow</a>
                         </div>
-                        <hr />
-                        <div class="individual-detail">
-                            <h6 class="tag-name col-lg-4">Phone Number</h6>
-                            <p class="tag-value col-lg-8">8888812345</p>
-                        </div>
-                        <hr />
-                        <div class="individual-detail">
-                            <h6 class="tag-name col-lg-4">Email</h6>
-                            <p class="tag-value col-lg-8">pthombre657@gmail.com</p>
-                        </div>
-                        <hr />
-                        <div class="individual-detail">
-                            <h6 class="tag-name col-lg-4">Address</h6>
-                            <p class="tag-value col-lg-8">
-                                Address B401, Shree Siddhivinayak Manasvi, 
-                                Survey no. 39/11B/12,
-                                Katraj - Ambegaon Bk Road, 
-                                Ambegaon, 
-                                Pune-411046
-                            </p>
-                        </div>
-                        <hr />
                     </div>
-                    <!-- Questions, ans, following stats -->
-                    <div class="more-stats mt-4">
-                        <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
-                            <div class="card-header">Following</div>
-                            <div class="card-body">
-                                <h1 class="card-title">15</h1>
-                                <a href="#" class="btn btn-primary">See Tags that you follow</a>
-                            </div>
+                    <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
+                        <div class="card-header">Questions Asked</div>
+                        <div class="card-body">
+                            <h1 class="card-title">11</h1>
+                            <a href="#" class="btn btn-primary">See Your Questions</a>
                         </div>
-                        <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
-                            <div class="card-header">Questions Asked</div>
-                            <div class="card-body">
-                                <h1 class="card-title">11</h1>
-                                <a href="#" class="btn btn-primary">See Your Questions</a>
-                            </div>
-                        </div>
-                        <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
-                            <div class="card-header">Answers Submitted</div>
-                            <div class="card-body">
-                                <h1 class="card-title">7</h1>
-                                <a href="#" class="btn btn-primary">See Your Answers</a>
-                            </div>
+                    </div>
+                    <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
+                        <div class="card-header">Answers Submitted</div>
+                        <div class="card-body">
+                            <h1 class="card-title">7</h1>
+                            <a href="#" class="btn btn-primary">See Your Answers</a>
                         </div>
                     </div>
                 </div>
