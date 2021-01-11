@@ -12,13 +12,19 @@ class TinyMCEWidget(TinyMCE):
 class PostForm(forms.ModelForm):
     Answer = forms.CharField(
         widget=TinyMCEWidget(
-            attrs={'required': False, 'cols': 30, 'rows': 50}
+            attrs={'required': False,'cols': 30, 'rows': 50}
         )
     )
 
     class Meta:
         model = Answer
         fields = '__all__'
+
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model=Answer
+        fields='__all__'
         
 
 class CreateUserForm(ModelForm):

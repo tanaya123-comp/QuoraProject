@@ -7,7 +7,7 @@ from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
 from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, only_normal_users_allowed
 
-from .forms import PostForm,TinyMCEWidget
+from .forms import PostForm,TinyMCEWidget,AnswerForm
 
 from django.contrib import messages
 
@@ -19,7 +19,8 @@ from django.contrib import messages
 def HomePage(request):
     tag=Tag.objects.all()
     answers=Answer.objects.all()
-    dictionary={'tag':tag,'answers':answers}
+    form=AnswerForm()
+    dictionary={'tag':tag,'answers':answers,'form':form}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
@@ -83,7 +84,9 @@ def AnswerPage(request):
         if x==0:
             question.append(i)
 
-    form=PostForm()
+    
+
+    form=AnswerForm()
 
     return render(request,'QuoraApp/AnswerPage.html',{'questions':question,'form':form})
 
