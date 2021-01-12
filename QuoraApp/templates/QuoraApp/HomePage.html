@@ -36,8 +36,8 @@
                     <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle">
-                    <button type="button" class="btn btn-success">Upvote</button>
-                    <button type="button" class="btn btn-danger">DownVote</button>
+                    <button type="button" class="btn btn-success"><a href="{% url 'upvote' i.id %}">Upvote</a></button>
+                    <button type="button" class="btn btn-danger"><a href="{% url 'downvote' i.id %}">DownVote</a></button>
 
                    <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#exampleModalCenter">
                     Answer
@@ -53,14 +53,18 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                         </div>
+                         <form method="POST">
                 <div class="modal-body">
+                        {% csrf_token %}
                     {{form.media}}
                     {{form.answer}}
+                    <input type="hidden" name="answer_id" value="{{i.id}}" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
+                  </form>
             </div>
           </div>
      </div>

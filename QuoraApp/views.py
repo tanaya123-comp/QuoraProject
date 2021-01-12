@@ -1,7 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from .forms import CreateUserForm, ProfileForm, EmployeeForm, StudentForm, QuestionForm
 from django.contrib.auth.models import Group
-from .models import Member,Tag,Question,Answer, Employee, Student
+from .models import Member,Tag,Question,Answer, Employee, Student,Vote
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
@@ -20,8 +20,27 @@ def HomePage(request):
     tag=Tag.objects.all()
     answers=Answer.objects.all()
     form=AnswerForm()
+
+    if request.method=='POST':
+        answer_id=request.POST.get('answer_id')
+        answer=Answer.objects.get(id=answer_id)
+        print(answer)
+        print(answer_id)
+        # form=AnswerForm(request.POST)
+        # form.fields['question']=answer.question
+        # form.fields['tag']=answer.tag
+        # form.fields['answeredBy']=request.user.member
+
+
+
+
+        if form.is_valid():
+            print("valid form")
+
+
     dictionary={'tag':tag,'answers':answers,'form':form}
     return render(request,'QuoraApp/HomePage.html',dictionary)
+
 
 
 @only_unauthenticated_users_allowed
@@ -97,15 +116,43 @@ def TagPage(request,pk):
     tag=Tag.objects.get(id=pk)
     answers=Answer.objects.filter(tag=tag)
     print(answers)
-    # questionsqueryset=Question.objects.filter(tag=tag)
-    # questions=[]
-    # for  i in questionsqueryset:
-    #     questions.append(i)
-    #     questions.append(Answer.objects.filter(question=i))
-    #
-    # print(questions)
-    # dictionary={'tag':tag,'questions':questions,"length":range(len(questions))}
-    return render(request,'QuoraApp/Tag.html',{'answers':answers})
+    form=AnswerForm()
+    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form})
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def upVote(request,pk):
+    ans=Answer.objects.get(id=pk)
+
+    vote=Vote.objects.create(answer=ans,vote=1,votedBy=request.user.member)
+
+    vote.save()
+
+    print(vote)
+
+    return  HttpResponse("<h1>Upvoted Successfully</h1>")
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def downVote(request,pk):
+    ans = Answer.objects.get(id=pk)
+
+    vote = Vote.objects.create(answer=ans, vote=2, votedBy=request.user.member)
+
+    vote.save()
+
+    print(vote)
+
+    return HttpResponse("<h1>DownVoted Successfully</h1>")
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def submitAnswer(request,pk):
+    if request.method=="POST":
+        print('in submit answer')
+
+
 
 
 @login_required(login_url='Register')
@@ -144,12 +191,15 @@ def IndividualQuestion(request, pk):
 
     tag = Tag.objects.all()
 
+    form=AnswerForm()
+
     print(question.askedBy)
     # Populate one question with many answers...
     context = {
         'question' : question,
         'all_answers' : all_answers,
-        'tag': tag
+        'tag': tag,
+        'form':form,
     }
 
     return render(request, 'QuoraApp/IndividualQuestion.html', context)

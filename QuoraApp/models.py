@@ -50,7 +50,7 @@ class Answer(models.Model):
 class Vote(models.Model):
     id = models.AutoField(primary_key=True)
     answer=models.ForeignKey(Answer,null=True,on_delete=models.SET_NULL)
-    vote=models.IntegerField()#0 -no vote 1-up vote 2-down vote
+    vote=models.IntegerField()# 1-up vote 2-down vote
     votedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
 
 class Employee(models.Model):
