@@ -9,141 +9,48 @@
                 <div class="card">
                   <div class="card-header headermiddle">
                     <img src="default_profile.png"/>
-                    Tanaya Wankar asked 3 Jan 2020
+                    {{ question.askedBy }} asked {{ question.creationTime }}
                   </div>
                   <div class="card-body">
                     <blockquote class="blockquote mb-0">
-                      <h5 class="card-title">What is the difference between tier 1 and tier 3 college students in India?</h5>
+                      <h5 class="card-title">{{ question.description }}</h5>
                     </blockquote>
                   </div>
                 </div>
 
                 <!-- Each answer -->
+                {% for answer in all_answers %}
                 <div class="card mt-4">
                   <div class="card-header tagmiddle">
                     <img src="default_profile.png"/>
-                    Prathamesh Thombre answered 4 Jan 2020
+                    {{ answer.answeredBy }} answered {{ answer.creationTime }}
                   </div>
                   <div class="card-body ques">
                     <p class="card-text">
-                       
-                        The ground reality is colleges differ in various aspects. Some are “tier 1” and some “tier 3”. Let’s take a look at some of the glaring differences between the students of these colleges :
-                        Connections - This is the most obvious one. Students need better alumni to get more opportunities. In tier 1 colleges, this is something which is really stressed upon. Their alumni are at many great positions, and they come in handy whenever needed.
-                        Health and wellness features availability - This is not so stressed upon in Indian context, but many colleges do not have sports fields and other facilities. These contribute to well balanced development of students.
-                        Mentality - Many students develop a inferiority complex or a superiority complex depending on the college they are in. Both of them are equally toxic in the long run. But it gives you a certain level of confidence when you are from a tier 1 college.
+                        {{ answer.answer|safe }}
                     </p>
                    <div class="bottommiddle">
-                     <img src="upvotedownvote.jpg"/>
-                     <img src="share.jfif"/>
-                     <img src="comment.png"/>
+                    <button type="button" class="btn btn-success">Upvote</button>
+                    <button type="button" class="btn btn-danger">DownVote</button>
+                    <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#exampleModalCenter">
+                    Answer
+                    </button>
                    </div>
                   </div>
                 </div>
-
-
-                <div class="card mt-4">
-                    <div class="card-header tagmiddle">
-                      <img src="default_profile.png"/>
-                      Shivam Vatshayan, former Research Intern at Indian Institute of Technology, Patna (2018)
-                    </div>
-                    <div class="card-body ques">
-                      <p class="card-text">
-                         
-                        I can Say as I had study in both tier 1 and tier 2/3 colleges.
-
-                        Tier 1 - IIT/ NITs -
-                        
-                        Students get Everything with less fees than Private Business University with more Opportunities and Good background and competitive Environment.
-                        They get facilities for growth of their Course.
-                        Rigorous lab and more inclination toward practicals and projects.
-                        High pressure and time management.
-                        Free seminars and workshop every other week for students by best mentors.
-                        Participation of Top product based companies.
-                        Ratio of girls and boys is worst.
-                        Tier 2/3 - Every Other private and State colleges -
-                        
-                        Irritating and useless Attendance policy 75% for giving exams.
-                        Heavy fees !!
-                        Student have to pay even for 1 test tube and wire and many kits in labs are not working or either not used for long time , If it work then faculties are not interested to put their whole effort on teaching practicals to students.
-                        Due to College management work ethics even faculties and students are not interested towards their work.
-                        Just copying and pasting useless assignment.
-                        Exams every other months.
-                        Writing Codes on pages and getting signed with Professor with closed eyes.
-                        Copying codes from pen drive, Internet and books in lab and practicals exam.
-                        Seminars and workshop and most of the things are paid.
-                      </p>
-                     <div class="bottommiddle">
-                       <img src="upvotedownvote.jpg"/>
-                       <img src="share.jfif"/>
-                       <img src="comment.png"/>
-                     </div>
-                    </div>
-                  </div>
-
-                  <div class="card mt-4">
-                    <div class="card-header tagmiddle">
-                      <img src="default_profile.png"/>
-                      Aviral Bhatnagar, IIT Bombay' 14 | IIM Ahmedabad' 16
-                    </div>
-                    <div class="card-body ques">
-                      <p class="card-text">
-                        “Tier 1” Student: Man, I wish I was in another college with less pressure
-
-                        “Tier 2” Student: Man, I wish I was in another college with more opportunities
-                        
-                        “Tier 3” Student: Man, I wish I was in another college
-                        
-                        High Achieving Student: Man, I am so lucky - I will work hard to do a good job
-                        
-                        Opportunities are what you make of them. That’s where the real difference is.
-                        
-                        And, as you will see in life, you can be a high achiever anywhere.
-                      </p>
-                     <div class="bottommiddle">
-                       <img src="upvotedownvote.jpg"/>
-                       <img src="share.jfif"/>
-                       <img src="comment.png"/>
-                     </div>
-                    </div>
-                  </div>
+                {% endfor %}
 
 
               </div>
               <nav class="navbar navbar-light bg-light col-lg-2 rightbar">
-                <ul class="navbar-nav ">
+                  <ul class="navbar-nav ">
+                    {% for i in tag %}
                     <li class="nav-item tag">
                       <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="#">Science</a>
+                        <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
                     </li>
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="#">Technology</a>
-                    </li>
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="#">Food</a>
-                    </li>
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="#">Nature</a>
-                    </li>
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                      <a class="nav-link" href="#">Tour</a>
-                  </li>
-                  <li class="nav-item tag">
-                    <img alt="tag" src="sampletag.jfif"/>
-                    <a class="nav-link" href="#">Bollywood</a>
-                </li>
-                <li class="nav-item tag">
-                  <img alt="tag" src="sampletag.jfif"/>
-                  <a class="nav-link" href="#">Medical</a>
-              </li>
-              <li class="nav-item tag">
-                <img alt="tag" src="sampletag.jfif"/>
-                <a class="nav-link" href="#">Computer Science</a>
-            </li>
-                </ul>
+                    {% endfor %}
+                  </ul>
 
           </nav>  
 

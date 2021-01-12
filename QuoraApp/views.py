@@ -113,6 +113,10 @@ def TagPage(request,pk):
 def AskQuestion(request):
     ques_form = QuestionForm()
 
+    # Also, we need to list all the questions that the user has asked
+    member = request.user.member
+    all_questions = Question.objects.filter(askedBy__exact=member)
+
     if request.method == 'POST':
         ques_form = QuestionForm(request.POST)
         if ques_form.is_valid():
@@ -123,15 +127,32 @@ def AskQuestion(request):
         else:
             messages.error(request, ques_form.errors)
     context = {
-        'form': ques_form
+        'form': ques_form,
+        'all_questions': all_questions,
     }
     return render(request, 'QuoraApp/AskQuestion.html', context)
 
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
-def IndividualQuestion(request):
-    return render(request, 'QuoraApp/IndividualQuestion.html')
+def IndividualQuestion(request, pk):
+    # Fetch the question object
+    question = Question.objects.filter(id__exact=pk)[0]
+
+    # Fetch all the answers to that question
+    all_answers = Answer.objects.filter(question__exact=question)
+
+    tag = Tag.objects.all()
+
+    print(question.askedBy)
+    # Populate one question with many answers...
+    context = {
+        'question' : question,
+        'all_answers' : all_answers,
+        'tag': tag
+    }
+
+    return render(request, 'QuoraApp/IndividualQuestion.html', context)
 
 
 @login_required(login_url='Register')

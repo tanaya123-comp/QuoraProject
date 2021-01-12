@@ -26,14 +26,14 @@
                     </blockquote>
                   </div>
                 </div>
-                <div class="card">
-                    {% for i in answers %}
+                  {% for i in answers %}
+                <div class="card mt-4">
                   <div class="card-header tagmiddle">
                     <img src="Pizza.jpg"/>
                    {{i.tag}}
                   </div>
                   <div class="card-body ques">
-                    <h5 class="card-title">{{i.question.description}}</h5>
+                    <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle">
                     <button type="button" class="btn btn-success">Upvote</button>
@@ -68,9 +68,9 @@
 
                    </div>
                   </div>
-                    {% endfor %}
-                </div>
 
+                </div>
+                {% endfor %}
 
               </div>
               <nav class="navbar navbar-light bg-light col-lg-2 rightbar">

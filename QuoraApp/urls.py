@@ -14,7 +14,7 @@ urlpatterns = [
 
     # For now, we are keeping individual question url simple
     # Afterwards, we will change it to something like this: question/1 or question/question_name
-    path('individualques/', IndividualQuestion),
+    path('ques/<str:pk>/', IndividualQuestion, name="Question"),
     path('profile/', Profile, name='Profile'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
