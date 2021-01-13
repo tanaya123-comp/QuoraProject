@@ -19,26 +19,7 @@ from django.contrib import messages
 def HomePage(request):
     tag=Tag.objects.all()
     answers=Answer.objects.all()
-    form=AnswerForm()
-
-    if request.method=='POST':
-        answer_id=request.POST.get('answer_id')
-        answer=Answer.objects.get(id=answer_id)
-        print(answer)
-        print(answer_id)
-        # form=AnswerForm(request.POST)
-        # form.fields['question']=answer.question
-        # form.fields['tag']=answer.tag
-        # form.fields['answeredBy']=request.user.member
-
-
-
-
-        if form.is_valid():
-            print("valid form")
-
-
-    dictionary={'tag':tag,'answers':answers,'form':form}
+    dictionary={'tag':tag,'answers':answers}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
@@ -124,6 +105,12 @@ def TagPage(request,pk):
 def upVote(request,pk):
     ans=Answer.objects.get(id=pk)
 
+
+
+    # ifExists=Vote.objects.get(answer=ans,vote=1,votedBy=request.user.member)
+    #
+    # print(ifExists)
+
     vote=Vote.objects.create(answer=ans,vote=1,votedBy=request.user.member)
 
     vote.save()
@@ -149,9 +136,22 @@ def downVote(request,pk):
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def submitAnswer(request,pk):
-    if request.method=="POST":
-        print('in submit answer')
+    print(pk)
+    question = Question.objects.get(id=pk)
+    form = AnswerForm()
+    if request.method == 'POST':
+       query_dict=request.POST
+       answer2=query_dict.get('answer')
+       tag=question.tag
+       answeredBy=request.user.member
 
+       obj=Answer.objects.create(answer=answer2,question=question,tag=tag,answeredBy=answeredBy)
+
+       obj.save()
+       messages.success(request, f"Answer Submitted!")
+       return redirect('HomePage')
+
+    return render(request,'QuoraApp/submitAnswer.html',{'form':form})
 
 
 
