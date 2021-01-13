@@ -178,15 +178,15 @@
                     <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
                         <div class="card-header">Following</div>
                         <div class="card-body">
-                            <h1 class="card-title">15</h1>
-                            <a href="#" class="btn btn-primary">See Tags that you follow</a>
+                            <h1 class="card-title">{{ num_tags }}</h1>
+                            <a href="{% url 'Following' %}" class="btn btn-primary">See Tags that you follow</a>
                         </div>
                     </div>
                     <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
                         <div class="card-header">Questions Asked</div>
                         <div class="card-body">
-                            <h1 class="card-title">11</h1>
-                            <a href="#" class="btn btn-primary">See Your Questions</a>
+                            <h1 class="card-title">{{ numQues }}</h1>
+                            <a href="{% url 'AskQuestion' %}" class="btn btn-primary">See Your Questions</a>
                         </div>
                     </div>
                     <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">

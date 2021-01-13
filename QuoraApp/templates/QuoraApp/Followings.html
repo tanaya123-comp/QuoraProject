@@ -1,0 +1,33 @@
+{%  extends 'QuoraApp/main.html' %}
+{% block content %}
+    <div class="outer-container">
+        <nav class="navbar navbar-light bg-light col-lg-2 leftbar">
+            <h5>Other Tags to Follow</h5>
+            <ul class="navbar-nav">
+                {% for i in tag %}
+                <li class="nav-item tag">
+                    <img alt="tag" src="sampletag.jfif"/>
+                    <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+        </nav>
+
+        <div class="col-lg-6">
+            <h5 class="alert alert-primary">{{ request.user }}, you follow these Topics...</h5>
+            {% for each_tag in following_tags %}
+            <div class="card mt-4">
+                <div class="card-body">
+                  <h5 class="card-title">{{ each_tag.tag.name }}</h5>
+                  <p class="card-text">{{ each_tag.tag.description}}</p>
+                  <a href="{% url 'Unfollow' each_tag.tag.id %}" class="btn btn-danger">Unfollow</a>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,HttpResponse
 from .forms import CreateUserForm, ProfileForm, EmployeeForm, StudentForm, QuestionForm
 from django.contrib.auth.models import Group
-from .models import Member,Tag,Question,Answer, Employee, Student,Vote
+from .models import Member,Tag,Question,Answer, Employee, Student,Vote, Following
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models  import User
 from django.contrib.auth.decorators import login_required
@@ -260,10 +260,17 @@ def Profile(request):
             messages.success(request, f"Your Job Details were saved!")
             new_details.save()
         return redirect('Profile')
+
+    # Additional stats:
+    # 1. Number of questions asked by user
+    num_ques = Question.objects.filter(askedBy__exact=profile).count()
+    num_tags = Following.objects.filter(member__exact=profile).count()
     context = {
         'form': form,
         'role': role,
         'q_form': qualification_form,
+        'numQues': num_ques,
+        'num_tags': num_tags
     }
     if role == 'None':
         # When the user hasn't filled any details, we should pass 2 blank forms for modals
@@ -271,3 +278,29 @@ def Profile(request):
         context['blank_job_form'] = blank_job_form
 
     return render(request, 'QuoraApp/Profile.html', context)
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def following(request):
+    member = request.user.member
+    following_tags = Following.objects.filter(member__exact=member)
+    following_tags_ids = following_tags.values('tag')
+    print(following_tags_ids)
+    remaining_tag = Tag.objects.exclude(id__in=following_tags_ids)
+    print(remaining_tag)
+    context = {
+        'tag': remaining_tag,
+        'following_tags': following_tags,
+    }
+    return render(request, 'QuoraApp/Followings.html', context)
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def UnfollowHandle(request, pk):
+    member = request.user.member
+    tag = Tag.objects.filter(id__exact=pk)[0]
+    current_following = Following.objects.get(member__exact=member, tag__exact=tag)
+    current_following.delete()
+    return redirect('Following')

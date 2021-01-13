@@ -30,10 +30,11 @@
                 <div class="card mt-4">
                   <div class="card-header tagmiddle">
                     <img src="Pizza.jpg"/>
-                   {{i.tag}}
+                    <span>{{ i.question.askedBy.name }} asked {{ i.question.creationTime }}</span>
+                    <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
+                    <span class="badge rounded-pill bg-warning text-dark">{{ i.question.tag }}</span>
                   </div>
                   <div class="card-body ques">
-                    <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle">
                     <button type="button" class="btn btn-success"><a style="color:white;" href="{% url 'upvote' i.id %}">Upvote</a></button>
