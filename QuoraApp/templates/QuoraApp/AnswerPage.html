@@ -58,3 +58,45 @@
 
 
 {% endblock %}
+
+
+{% block scripts %}
+
+$('.upvote').click(function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "upvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log('upvote done')
+        }
+     })
+});
+
+$('.downvote').click(function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "downvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log('downvote done')
+        }
+     })
+});
+
+
+
+
+{% endblock scripts %}

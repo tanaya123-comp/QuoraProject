@@ -96,42 +96,90 @@ def AnswerPage(request):
 def TagPage(request,pk):
     tag=Tag.objects.get(id=pk)
     answers=Answer.objects.filter(tag=tag)
+
+    if Following.objects.filter(member=request.user.member,tag=tag):
+        follow=1
+
+    else:
+        follow=2
+
     print(answers)
     form=AnswerForm()
-    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form})
+    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow})
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
-def upVote(request,pk):
-    ans=Answer.objects.get(id=pk)
+def upVote(request):
+    if request.method == 'GET':
+        pk = request.GET['post_id']
+        ans=Answer.objects.get(id=pk)
+
+
+        if Vote.objects.filter(answer=ans,vote=1,votedBy=request.user.member).exists():
+
+
+            return HttpResponse("<h1>Already Voted</h1>")
+
+        if Vote.objects.filter(answer=ans,vote=2,votedBy=request.user.member).exists():
+
+            v=Vote.objects.filter(answer=ans,vote=2,votedBy=request.user.member)
+            v.delete()
+
+            vote = Vote.objects.create(answer=ans, vote=1, votedBy=request.user.member)
+
+            vote.save()
+
+        #print(vote)
+
+            return HttpResponse("<h1>Upvoted Successfully</h1>")
+
+        vote = Vote.objects.create(answer=ans, vote=1, votedBy=request.user.member)
+
+        vote.save()
+
+        #print(vote)
+
+        return HttpResponse("<h1>Upvoted Successfully</h1>")
 
 
 
-    # ifExists=Vote.objects.get(answer=ans,vote=1,votedBy=request.user.member)
-    #
-    # print(ifExists)
-
-    vote=Vote.objects.create(answer=ans,vote=1,votedBy=request.user.member)
-
-    vote.save()
-
-    print(vote)
-
-    return  HttpResponse("<h1>Upvoted Successfully</h1>")
 
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
-def downVote(request,pk):
-    ans = Answer.objects.get(id=pk)
+def downVote(request):
+    if request.method == 'GET':
+        pk = request.GET['post_id']
+        ans = Answer.objects.get(id=pk)
 
-    vote = Vote.objects.create(answer=ans, vote=2, votedBy=request.user.member)
 
-    vote.save()
 
-    print(vote)
+        if Vote.objects.filter(answer=ans, vote=2, votedBy=request.user.member).exists():
+            return HttpResponse("<h1>Already DownVoted</h1>")
 
-    return HttpResponse("<h1>DownVoted Successfully</h1>")
+        if Vote.objects.filter(answer=ans, vote=1, votedBy=request.user.member).exists():
+            v = Vote.objects.filter(answer=ans, vote=1, votedBy=request.user.member)
+            v.delete()
+
+            vote = Vote.objects.create(answer=ans, vote=2, votedBy=request.user.member)
+
+            vote.save()
+
+        # print(vote)
+
+            return HttpResponse("<h1>DownVoted Successfully</h1>")
+
+
+
+
+        vote = Vote.objects.create(answer=ans, vote=2, votedBy=request.user.member)
+
+        vote.save()
+
+    #print(vote)
+
+        return HttpResponse("<h1>Downvoted Successfully</h1>")
+
 
 @login_required(login_url='Register')
 @only_normal_users_allowed

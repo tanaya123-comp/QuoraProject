@@ -37,8 +37,8 @@
                   <div class="card-body ques">
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle">
-                    <button type="button" class="btn btn-success"><a style="color:white;" href="{% url 'upvote' i.id %}">Upvote</a></button>
-                    <button type="button" class="btn btn-danger"><a style="color:white;" href="{% url 'downvote' i.id %}">DownVote</a></button>
+                    <button type="button" class="btn btn-success"><a class="upvote" data-catid="{{ i.id }}" style="color:white;" href="#">Upvote</a></button>
+                    <button type="button" class="btn btn-danger"><a class="downvote" data-catid="{{ i.id }}" style="color:white;" href="#">DownVote</a></button>
 
                    <button type="button" class="btn btn-primary">
                        <a style="color:white;" href="{% url 'submitanswer' i.question.id %}">
@@ -74,4 +74,43 @@
           </div>
 
 {% endblock %}
+{% block scripts %}
 
+$('.upvote').click(function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "upvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log('upvote done')
+        }
+     })
+});
+
+$('.downvote').click(function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "downvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log('downvote done')
+        }
+     })
+});
+
+
+
+
+{% endblock scripts %}
