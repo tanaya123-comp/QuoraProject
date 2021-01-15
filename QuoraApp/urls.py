@@ -1,7 +1,9 @@
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion, IndividualQuestion, Profile,upVote,downVote,submitAnswer, following, UnfollowHandle
+from .views import (HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion,
+                        IndividualQuestion, Profile,upVote,downVote,submitAnswer,
+                        following, UnfollowHandle, FollowHandle, MyAnswers)
 
 urlpatterns = [
     path('',HomePage,name="HomePage"),
@@ -19,6 +21,8 @@ urlpatterns = [
     path('ques/<str:pk>/', IndividualQuestion, name="Question"),
     path('profile/', Profile, name='Profile'),
     path('following/', following, name='Following'),
-    path('unfollow/<str:pk>', UnfollowHandle, name='Unfollow')
+    path('unfollow/', UnfollowHandle, name='Unfollow'),
+    path('follow/', FollowHandle, name='Follow'),
+    path('myanswers/', MyAnswers, name='MyAnswers'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,8 +9,11 @@
               <!-- Tag description -->
                 <img class="card-img-top" src="sampletag.jfif" alt="Card image cap">
                 <div style="display:flex,justify-content:centre, ">
-                <button type="button"  class="btn btn-success">Follow</button>
-                <button type="button"  class="btn btn-danger">UnFollow</button>
+                {% if follow %}
+                <button type="button"  class="btn btn-danger follow-unfollow" id="unfollow" data-catid="{{cat_id}}">UnFollow</button>
+                {% else %}
+                <button type="button"  class="btn btn-success follow-unfollow" id="follow" data-catid="{{cat_id}}">Follow</button>
+                {% endif %}
                  </div>
                 <div class="card-body">
                   <h5 class="card-title">{{tag.name}}</h5>
@@ -26,27 +29,21 @@
 
                   <!-- Question description -->
                      {% for i in answers %}
-                  <div class="card">
+                  <div class="card mt-4">
                     <div class="card-header headermiddle">
                       <img src="default_profile.png"/>
                          {{i.question.askedBy.name}} {{i.question.creationTime}}
-                    </div>
-                    <div class="card-body">
-                      <blockquote class="blockquote mb-0">
+                        <blockquote class="blockquote mb-0">
                           <h5 class="card-title">{{i.question.description}}</h5>
-                      </blockquote>
+                        </blockquote>
                     </div>
                   </div>
 
                   <!-- Answer For Question -->
 
-                  <div class="card mt-4">
-                    <div class="card-header tagmiddle">
-                      <img src="default_profile.png"/>
-                     {{i.answeredBy.name}} {{i.creationTime}}
-
-                    </div>
+                  <div class="card">
                     <div class="card-body ques">
+                        <p>{{i.answeredBy.name}} answered {{i.creationTime}}</p>
                       <p class="card-text">
                         {{i.answer|safe}}
 
@@ -83,3 +80,26 @@
           </div>
 
 {% endblock %}
+
+{% block scripts %}
+    $('.follow-unfollow').click(function(){
+        var catid = $(this).attr('data-catid');
+        var currText = $(this).text().toLowerCase();
+        $.ajax({
+            type: "GET",
+            url: `/${currText}`,
+            data:{
+                     post_id: catid
+            },
+            success: function( data ){
+                if(currText === 'follow') {
+                    // We have now followed that tag
+                    $('#follow').removeClass('btn-success').addClass('btn-danger').text('Unfollow').attr("id", "unfollow");
+                }
+                else {
+                    $('#unfollow').removeClass('btn-danger').addClass('btn-success').text('Follow').attr("id", "follow");
+                }
+            }
+        })
+    })
+{% endblock scripts %}

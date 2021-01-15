@@ -35,6 +35,7 @@
                     <span class="badge rounded-pill bg-warning text-dark">{{ i.question.tag }}</span>
                   </div>
                   <div class="card-body ques">
+                    <p>{{ i.answeredBy }} answered {{ i.creationTime }}</p>
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle">
                     <button type="button" class="btn btn-success"><a class="upvote" data-catid="{{ i.id }}" style="color:white;" href="#">Upvote</a></button>

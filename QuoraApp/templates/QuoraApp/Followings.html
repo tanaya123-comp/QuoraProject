@@ -3,7 +3,8 @@
     <div class="outer-container">
         <nav class="navbar navbar-light bg-light col-lg-2 leftbar">
             <h5>Other Tags to Follow</h5>
-            <ul class="navbar-nav">
+            <p id="message"></p>
+            <ul class="navbar-nav side-bar">
                 {% for i in tag %}
                 <li class="nav-item tag">
                     <img alt="tag" src="sampletag.jfif"/>
@@ -18,11 +19,19 @@
         <div class="col-lg-6">
             <h5 class="alert alert-primary">{{ request.user }}, you follow these Topics...</h5>
             {% for each_tag in following_tags %}
-            <div class="card mt-4">
+            <div class="card mt-4" id="card{{each_tag.tag.id}}">
                 <div class="card-body">
-                  <h5 class="card-title">{{ each_tag.tag.name }}</h5>
+                    <h5 class="card-title"><a href="{% url 'TagPage' each_tag.tag.id %}">{{ each_tag.tag.name }}</a></h5>
                   <p class="card-text">{{ each_tag.tag.description}}</p>
-                  <a href="{% url 'Unfollow' each_tag.tag.id %}" class="btn btn-danger">Unfollow</a>
+                    <button type="button"
+                            class="btn btn-danger">
+                        <a class="unfollow"
+                           data-catid="{{ each_tag.tag.id }}"
+                           data-field-id="{{ each_tag.tag.name }}"
+                           style="color:white;"
+                           href="#">Unfollow
+                        </a>
+                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -31,3 +40,29 @@
 
     </div>
 {% endblock %}
+
+{% block scripts %}
+    $('.unfollow').click(function(){
+        var catid;
+        catid = $(this).attr("data-catid");
+        var catname = $(this).attr("data-field-id");
+        $.ajax(
+        {
+            type: "GET",
+            url: "/unfollow",
+            data:{
+                     post_id: catid
+            },
+            success: function( data ){
+                $( '#card'+ catid ).remove();
+                $('.side-bar').append(
+                    `<li class="nav-item tag">
+                        <img alt="tag" src="sampletag.jfif"/>
+                        <a class="nav-link" href="/tagpage/${catid}/">${catname}</a>
+                    </li>`
+                );
+            }
+        })
+
+    })
+{% endblock scripts %}

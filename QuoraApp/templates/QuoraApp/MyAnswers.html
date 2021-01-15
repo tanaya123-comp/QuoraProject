@@ -1,0 +1,42 @@
+{%  extends 'QuoraApp/main.html' %}
+{% block content %}
+          <div class="outer-container">
+              <div class="col-lg-6">
+                <div class="alert alert-primary" role="alert">
+                    <h5>{{request.user.username}}, you have answered these questions...</h5>
+                </div>
+                  {% for i in answers %}
+                <div class="card mt-4">
+                  <div class="card-header tagmiddle">
+                    <img src="Pizza.jpg"/>
+                    <span>{{ i.question.askedBy.name }} asked {{ i.question.creationTime }}</span>
+                    <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
+                    <span class="badge rounded-pill bg-warning text-dark">{{ i.question.tag }}</span>
+                  </div>
+                  <div class="card-body ques">
+                    <p>{{ i.answeredBy }} answered {{ i.creationTime }}</p>
+                    <p class="card-text">{{i.answer|safe}}</p>
+                   <div class="bottommiddle">
+                    <button type="button" class="btn btn-success"><a class="upvote" data-catid="{{ i.id }}" style="color:white;" href="#">Upvote</a></button>
+                    <button type="button" class="btn btn-danger"><a class="downvote" data-catid="{{ i.id }}" style="color:white;" href="#">DownVote</a></button>
+
+                   <button type="button" class="btn btn-primary">
+                       <a style="color:white;" href="{% url 'submitanswer' i.question.id %}">
+                             Answer
+                       </a>
+                    </button>
+
+                    <!-- Modal -->
+
+
+
+                   </div>
+                  </div>
+
+                </div>
+                {% endfor %}
+
+              </div>
+          </div>
+
+{% endblock %}

@@ -97,15 +97,13 @@ def TagPage(request,pk):
     tag=Tag.objects.get(id=pk)
     answers=Answer.objects.filter(tag=tag)
 
+    follow = False
     if Following.objects.filter(member=request.user.member,tag=tag):
-        follow=1
-
-    else:
-        follow=2
+        follow=True
 
     print(answers)
     form=AnswerForm()
-    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow})
+    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow, 'cat_id':pk})
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
@@ -313,12 +311,14 @@ def Profile(request):
     # 1. Number of questions asked by user
     num_ques = Question.objects.filter(askedBy__exact=profile).count()
     num_tags = Following.objects.filter(member__exact=profile).count()
+    num_answers = Answer.objects.filter(answeredBy__exact=profile).count()
     context = {
         'form': form,
         'role': role,
         'q_form': qualification_form,
         'numQues': num_ques,
-        'num_tags': num_tags
+        'num_tags': num_tags,
+        'num_answers': num_answers,
     }
     if role == 'None':
         # When the user hasn't filled any details, we should pass 2 blank forms for modals
@@ -346,9 +346,30 @@ def following(request):
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
-def UnfollowHandle(request, pk):
+def UnfollowHandle(request):
+    pk = request.GET['post_id']
+    print('pk is ', pk)
     member = request.user.member
     tag = Tag.objects.filter(id__exact=pk)[0]
     current_following = Following.objects.get(member__exact=member, tag__exact=tag)
     current_following.delete()
-    return redirect('Following')
+    return HttpResponse('Success')
+
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def FollowHandle(request):
+    pk = request.GET['post_id']
+    member = request.user.member
+    tag = Tag.objects.filter(id__exact=pk)[0]
+    current_following = Following.objects.create(member=member, tag=tag)
+    return HttpResponse('Success')
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def MyAnswers(request):
+    answers = Answer.objects.filter(answeredBy__exact=request.user.member)
+    context = {
+        'answers': answers,
+    }
+    return render(request, 'QuoraApp/MyAnswers.html', context)
