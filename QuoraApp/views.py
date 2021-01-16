@@ -18,8 +18,29 @@ from django.contrib import messages
 @only_normal_users_allowed
 def HomePage(request):
     tag=Tag.objects.all()
+    following=Following.objects.filter(member__exact=request.user.member)
     answers=Answer.objects.all()
-    dictionary={'tag':tag,'answers':answers}
+    upvote=[]
+    downvote=[]
+    for i in answers:
+        upvote.append(Vote.objects.filter(answer=i,vote=1).count())
+        downvote.append(Vote.objects.filter(answer=i,vote=2).count())
+
+    print(upvote)
+    print(downvote)
+
+    youupvote=[]
+    youdownvote=[]
+    for i in answers:
+        youupvote.append(Vote.objects.filter(answer=i,vote=1,votedBy=request.user.member).count())
+        youdownvote.append(Vote.objects.filter(answer=i,vote=2,votedBy=request.user.member).count())
+
+    print(youupvote)
+    print(youdownvote)
+
+    pres=[1,2]
+
+    dictionary={'tag':tag,'answers':answers,"following":following,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
@@ -115,7 +136,6 @@ def upVote(request):
 
         if Vote.objects.filter(answer=ans,vote=1,votedBy=request.user.member).exists():
 
-
             return HttpResponse("<h1>Already Voted</h1>")
 
         if Vote.objects.filter(answer=ans,vote=2,votedBy=request.user.member).exists():
@@ -129,7 +149,7 @@ def upVote(request):
 
         #print(vote)
 
-            return HttpResponse("<h1>Upvoted Successfully</h1>")
+            return HttpResponse("<h1>Now upvoted</h1>")
 
         vote = Vote.objects.create(answer=ans, vote=1, votedBy=request.user.member)
 
@@ -137,7 +157,7 @@ def upVote(request):
 
         #print(vote)
 
-        return HttpResponse("<h1>Upvoted Successfully</h1>")
+        return HttpResponse("<h1>upvote success</h1>")
 
 
 
@@ -153,7 +173,7 @@ def downVote(request):
 
 
         if Vote.objects.filter(answer=ans, vote=2, votedBy=request.user.member).exists():
-            return HttpResponse("<h1>Already DownVoted</h1>")
+            return HttpResponse("<h1>Already Downvoted</h1>")
 
         if Vote.objects.filter(answer=ans, vote=1, votedBy=request.user.member).exists():
             v = Vote.objects.filter(answer=ans, vote=1, votedBy=request.user.member)
@@ -165,7 +185,7 @@ def downVote(request):
 
         # print(vote)
 
-            return HttpResponse("<h1>DownVoted Successfully</h1>")
+            return HttpResponse("<h1>Now downvoted</h1>")
 
 
 
@@ -176,7 +196,7 @@ def downVote(request):
 
     #print(vote)
 
-        return HttpResponse("<h1>Downvoted Successfully</h1>")
+        return HttpResponse("<h1>downvote successfull</h1>")
 
 
 @login_required(login_url='Register')
@@ -373,3 +393,20 @@ def MyAnswers(request):
         'answers': answers,
     }
     return render(request, 'QuoraApp/MyAnswers.html', context)
+
+
+def getupvote(request):
+    if request.method == 'GET':
+        pk = request.GET['post_id']
+        ans = Answer.objects.get(id=pk)
+
+
+        return HttpResponse(Vote.objects.filter(answer=ans,vote=1).count())
+
+
+def getdownvote(request):
+    if request.method == 'GET':
+        pk = request.GET['post_id']
+        ans = Answer.objects.get(id=pk)
+
+        return HttpResponse(Vote.objects.filter(answer=ans, vote=2).count())

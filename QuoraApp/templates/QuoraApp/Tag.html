@@ -18,6 +18,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{tag.name}}</h5>
                   <p class="card-text">{{tag.description}}</p>
+                    <span class="badge rounded-pill bg-warning text-dark">Followed By:{{ tag.following_set.count }}</span>
                   <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 </div>
 
