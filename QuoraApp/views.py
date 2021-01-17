@@ -122,9 +122,29 @@ def TagPage(request,pk):
     if Following.objects.filter(member=request.user.member,tag=tag):
         follow=True
 
+    upvote = []
+    downvote = []
+    for i in answers:
+        upvote.append(Vote.objects.filter(answer=i, vote=1).count())
+        downvote.append(Vote.objects.filter(answer=i, vote=2).count())
+
+    print(upvote)
+    print(downvote)
+
+    youupvote = []
+    youdownvote = []
+    for i in answers:
+        youupvote.append(Vote.objects.filter(answer=i, vote=1, votedBy=request.user.member).count())
+        youdownvote.append(Vote.objects.filter(answer=i, vote=2, votedBy=request.user.member).count())
+
+    print(youupvote)
+    print(youdownvote)
+
+    pres = [1, 2]
+
     print(answers)
     form=AnswerForm()
-    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow, 'cat_id':pk})
+    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow, 'cat_id':pk,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres})
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
@@ -257,6 +277,26 @@ def IndividualQuestion(request, pk):
 
     tag = Tag.objects.all()
 
+    upvote = []
+    downvote = []
+    for i in all_answers:
+        upvote.append(Vote.objects.filter(answer=i, vote=1).count())
+        downvote.append(Vote.objects.filter(answer=i, vote=2).count())
+
+    print(upvote)
+    print(downvote)
+
+    youupvote = []
+    youdownvote = []
+    for i in all_answers:
+        youupvote.append(Vote.objects.filter(answer=i, vote=1, votedBy=request.user.member).count())
+        youdownvote.append(Vote.objects.filter(answer=i, vote=2, votedBy=request.user.member).count())
+
+    print(youupvote)
+    print(youdownvote)
+
+    pres = [1, 2]
+
     form=AnswerForm()
 
     print(question.askedBy)
@@ -266,6 +306,11 @@ def IndividualQuestion(request, pk):
         'all_answers' : all_answers,
         'tag': tag,
         'form':form,
+        'upvote': upvote,
+        'downvote': downvote,
+        'up': youupvote,
+        'down': youdownvote,
+        'pres': pres,
     }
 
     return render(request, 'QuoraApp/IndividualQuestion.html', context)

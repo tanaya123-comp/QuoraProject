@@ -45,11 +45,11 @@
                        <p id="up{{i.id}}">
                        {% if yu in pres %}
 
-                        <button type="button" disabled="true" id="disup{{i.id}}"  class="btn btn-success"><a class="upvote"    data-catid="{{ i.id }}" style="color:white" >Upvote</a></button>
+                        <button type="button" disabled="true" id="disup{{i.id}}"  class="btn btn-success"><a class="upvote"    data-catid="{{ i.id }}" style="color:white" >+</a></button>
 
                        {% else %}
 
-                       <button type="button"  class="btn btn-light" id="ableup{{i.id}}"><a class="upvote"  data-catid="{{ i.id }}" style="color:black;" >Upvote</a></button>
+                       <button type="button"  class="btn btn-light" id="ableup{{i.id}}"><a class="upvote"  data-catid="{{ i.id }}" style="color:black;" >+</a></button>
 
                        {% endif %}
                            </p>
@@ -61,12 +61,12 @@
                          <p id="dw{{i.id}}">
                        {% if yd in pres %}
 
-                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" style="color:white" >DownVote</a></button>
+                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" style="color:white" >-</a></button>
 
 
                        {% else %}
 
-                       <button type="button"  class="btn btn-light" id="abledw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" style="color:black" >DownVote</a></button>
+                       <button type="button"  class="btn btn-light" id="abledw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" style="color:black" >-</a></button>
 
                        {% endif %}
                               </p>
@@ -119,7 +119,7 @@
 {% endblock %}
 {% block scripts %}
 
-$('.upvote').click(function(){
+$('body').on('click','a.upvote',function(){
     var catid;
     catid = $(this).attr("data-catid");
     $.ajax(
@@ -134,13 +134,13 @@ $('.upvote').click(function(){
             console.log(data);
             $( '#up'+ catid ).empty();
             $('#up'+catid).append(
-                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" style="color:white" >Upvote</a></button>`
+                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" style="color:white" >+</a></button>`
             );
 <!--            $('#disdw'+catid).remove();-->
 <!--            $('#abledw+catid).remove();-->
                 $('#dw'+catid).empty();
           $('#dw'+catid).append(
-             `<button type="button"  class="btn btn-light" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" style="color:black" >DownVote</a></button>`
+             `<button type="button"  class="btn btn-light" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" style="color:black" >-</a></button>`
           );
         }
      })
@@ -150,7 +150,7 @@ $('.upvote').click(function(){
 
 });
 
-$('.downvote').click(function(){
+$('body').on('click','a.downvote',function(){
     var catid;
     catid = $(this).attr("data-catid");
     $.ajax(
@@ -165,13 +165,13 @@ $('.downvote').click(function(){
             console.log(data);
              $( '#dw'+ catid ).empty();
              $('#dw'+catid).append(
-                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}" style="color:white" >DownVote</a></button>`
+                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}" style="color:white" >-</a></button>`
             );
 <!--            $('#ableup'+catid).remove();-->
 <!--            $('#disup'+catid).remove();-->
             $('#up'+catid).empty();
             $('#up'+catid).append(
-              `<button type="button"  class="btn btn-light" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" style="color:black;" >Upvote</a></button>`
+              `<button type="button"  class="btn btn-light" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" style="color:black;" >+</a></button>`
             );
         }
      })

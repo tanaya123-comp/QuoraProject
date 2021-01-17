@@ -29,19 +29,67 @@
                     <p class="card-text">
                         {{ answer.answer|safe }}
                     </p>
-                   <div class="bottommiddle">
-                     <button type="button" class="btn btn-success"><a class="upvote" data-catid="{{ answer.id }}" style="color:white;" href="#">Upvote</a></button>
-                    <button type="button" class="btn btn-danger"><a class="downvote" data-catid="{{ answer.id }}" style="color:white;" href="#">DownVote</a></button>
+                   <div class="bottommiddle" style="display:flex">
+
+                     {% for yu in up %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <p id="up{{answer.id}}">
+                       {% if yu in pres %}
+
+                        <button type="button" disabled="true" id="disup{{answer.id}}"  class="btn btn-success"><a class="upvote" data-catid="{{ answer.id }}" style="color:white" >+</a></button>
+
+                       {% else %}
+
+                       <button type="button"  class="btn btn-light" id="ableup{{answer.id}}"><a class="upvote" data-catid="{{ answer.id }}" style="color:black;" >+</a></button>
+
+                       {% endif %}
+                           </p>
+                        {% endif %}
+                       {% endfor %}
+
+                       {% for yd in down %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                         <p id="dw{{answer.id}}">
+                       {% if yd in pres %}
+
+                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" style="color:white" >-</a></button>
+
+
+                       {% else %}
+
+                       <button type="button"  class="btn btn-light" id="abledw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" style="color:black" >-</a></button>
+
+                       {% endif %}
+                              </p>
+                       {% endif %}
+                       {% endfor %}
 
                    <button type="button" class="btn btn-primary">
-                    <a  style="color:white" href="{% url 'submitanswer' answer.question.id %}">
-                    Answer
-                        </a>
+                       <a style="color:white;" href="{% url 'submitanswer' answer.question.id %}">
+                             Answer
+                       </a>
                     </button>
 
 
 
+
                    </div>
+
+                      <p>
+                       {% for u in upvote %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <span class="badge rounded-pill bg-warning text-dark">Upvotes:{{u}}</span>
+                       {% endif %}
+                       {% endfor %}
+                       {% for k in downvote %}
+                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <span class="badge rounded-pill bg-warning text-dark">DownVotes:{{k}}</span>
+                       {% endif %}
+                       {% endfor %}
+                       </p>
+
+
+
                   </div>
                 </div>
                 {% endfor %}
@@ -66,36 +114,64 @@
 {% endblock %}
 {% block scripts %}
 
-$('.upvote').click(function(){
+$('body').on('click','a.upvote',function(){
     var catid;
     catid = $(this).attr("data-catid");
+    console.log("here upvote")
+    console.log(catid)
     $.ajax(
     {
         type:"GET",
-        url: "upvote/",
+        url: "http://127.0.0.1:8000/upvote/",
         data:{
                  post_id: catid
         },
         success: function( data )
         {
-            console.log('upvote done')
+            console.log(data);
+            $( '#up'+ catid ).empty();
+            $('#up'+catid).append(
+                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" style="color:white" >+</a></button>`
+            );
+<!--            $('#disdw'+catid).remove();-->
+<!--            $('#abledw+catid).remove();-->
+                $('#dw'+catid).empty();
+          $('#dw'+catid).append(
+             `<button type="button"  class="btn btn-light" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" style="color:black" >-</a></button>`
+          );
         }
      })
+
+
+
+
 });
 
-$('.downvote').click(function(){
+$('body').on('click','a.downvote',function(){
     var catid;
     catid = $(this).attr("data-catid");
+    console.log("here downvote")
+    console.log(catid)
     $.ajax(
     {
         type:"GET",
-        url: "downvote/",
+        url: "http://127.0.0.1:8000/downvote/",
         data:{
                  post_id: catid
         },
         success: function( data )
         {
-            console.log('downvote done')
+            console.log(data);
+             $( '#dw'+ catid ).empty();
+             $('#dw'+catid).append(
+                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}" style="color:white" >-</a></button>`
+            );
+<!--            $('#ableup'+catid).remove();-->
+<!--            $('#disup'+catid).remove();-->
+            $('#up'+catid).empty();
+            $('#up'+catid).append(
+              `<button type="button"  class="btn btn-light" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" style="color:black;" >+</a></button>`
+            );
         }
      })
 });
