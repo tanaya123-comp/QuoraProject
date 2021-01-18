@@ -8,7 +8,7 @@
                 <!-- Question text -->
                 <div class="card">
                   <div class="card-header headermiddle">
-                    <img src="default_profile.png"/>
+                    <img src="{{ question.askedBy.profile_pic.url }}"/>
                     {{ question.askedBy }} asked {{ question.creationTime }}
                   </div>
                   <div class="card-body">
@@ -22,7 +22,7 @@
                 {% for answer in all_answers %}
                 <div class="card mt-4">
                   <div class="card-header tagmiddle">
-                    <img src="default_profile.png"/>
+                    <img src="{{ answer.answeredBy.profile_pic.url }}"/>
                     {{ answer.answeredBy }} answered {{ answer.creationTime }}
                   </div>
                   <div class="card-body ques">
@@ -36,11 +36,11 @@
                        <p id="up{{answer.id}}">
                        {% if yu in pres %}
 
-                        <button type="button" disabled="true" id="disup{{answer.id}}"  class="btn btn-success"><a class="upvote" data-catid="{{ answer.id }}" style="color:white" >+</a></button>
+                        <button type="button" disabled="true" id="disup{{answer.id}}"  class="btn btn-success"><a class="upvote" data-catid="{{ answer.id }}" >UpVoted <i class="fa fa-thumbs-up"></i></a></a></button>
 
                        {% else %}
 
-                       <button type="button"  class="btn btn-light" id="ableup{{answer.id}}"><a class="upvote" data-catid="{{ answer.id }}" style="color:black;" >+</a></button>
+                       <button type="button"  class="btn btn-outline-success" id="ableup{{answer.id}}"><a class="upvote" data-catid="{{ answer.id }}" >UpVote <i class="fa fa-thumbs-up"></i></a></button>
 
                        {% endif %}
                            </p>
@@ -52,12 +52,12 @@
                          <p id="dw{{answer.id}}">
                        {% if yd in pres %}
 
-                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" style="color:white" >-</a></button>
+                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" >DownVoted <i class="fa fa-thumbs-down"></i></a></button>
 
 
                        {% else %}
 
-                       <button type="button"  class="btn btn-light" id="abledw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" style="color:black" >-</a></button>
+                       <button type="button"  class="btn btn-outline-danger" id="abledw{{answer.id}}"><a class="downvote" data-catid="{{ answer.id }}" >DownVote <i class="fa fa-thumbs-down"></i></a></button>
 
                        {% endif %}
                               </p>
@@ -78,12 +78,12 @@
                       <p>
                        {% for u in upvote %}
                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
-                       <span class="badge rounded-pill bg-warning text-dark">Upvotes:{{u}}</span>
+                       <span class="badge rounded-pill bg-warning text-dark" id="upvotes{{answer.id}}">Upvotes:{{u}}</span>
                        {% endif %}
                        {% endfor %}
                        {% for k in downvote %}
                         {% if forloop.counter0 == forloop.parentloop.counter0 %}
-                       <span class="badge rounded-pill bg-warning text-dark">DownVotes:{{k}}</span>
+                       <span class="badge rounded-pill bg-warning text-dark" id="downvotes{{answer.id}}">DownVotes:{{k}}</span>
                        {% endif %}
                        {% endfor %}
                        </p>
@@ -122,22 +122,34 @@ $('body').on('click','a.upvote',function(){
     $.ajax(
     {
         type:"GET",
-        url: "http://127.0.0.1:8000/upvote/",
+        url: "/upvote/",
         data:{
                  post_id: catid
         },
         success: function( data )
         {
             console.log(data);
+            let btnClass = $('#dw'+catid + ' :button').attr('class');
+            let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+            let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+            console.log(btnClass);
+            if(btnClass === 'btn btn-danger') {
+              downCnt -= 1;
+            } else {
+              console.log($(`#upvotes${catid}`).text());
+            }
+            upCnt += 1;
+            $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+            $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
             $( '#up'+ catid ).empty();
             $('#up'+catid).append(
-                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" style="color:white" >+</a></button>`
+                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" >UpVoted <i class="fa fa-thumbs-up"></i></a></a></button>`
             );
 <!--            $('#disdw'+catid).remove();-->
 <!--            $('#abledw+catid).remove();-->
                 $('#dw'+catid).empty();
           $('#dw'+catid).append(
-             `<button type="button"  class="btn btn-light" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" style="color:black" >-</a></button>`
+             `<button type="button"  class="btn btn-outline-danger" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" >DownVote <i class="fa fa-thumbs-down"></i></a></button>`
           );
         }
      })
@@ -155,22 +167,33 @@ $('body').on('click','a.downvote',function(){
     $.ajax(
     {
         type:"GET",
-        url: "http://127.0.0.1:8000/downvote/",
+        url: "/downvote/",
         data:{
                  post_id: catid
         },
         success: function( data )
         {
             console.log(data);
+             let btnClass = $('#up'+catid + ' :button').attr('class');
+             let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+             let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+             if(btnClass === 'btn btn-success') {
+                upCnt -= 1;
+             } else {
+                console.log($(`#upvotes${catid}`).text());
+             }
+             downCnt += 1;
+             $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+             $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
              $( '#dw'+ catid ).empty();
              $('#dw'+catid).append(
-                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}" style="color:white" >-</a></button>`
+                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}">DownVoted <i class="fa fa-thumbs-down"></i></a></button>`
             );
 <!--            $('#ableup'+catid).remove();-->
 <!--            $('#disup'+catid).remove();-->
             $('#up'+catid).empty();
             $('#up'+catid).append(
-              `<button type="button"  class="btn btn-light" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" style="color:black;" >+</a></button>`
+              `<button type="button"  class="btn btn-outline-success" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" >UpVote <i class="fa fa-thumbs-up"></i></a></button>`
             );
         }
      })
