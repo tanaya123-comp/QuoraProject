@@ -96,17 +96,17 @@
 
 
               </div>
-              <nav class="navbar navbar-light bg-light col-lg-2 rightbar">
-                  <ul class="navbar-nav ">
+              <div class="col-lg-2 rightbar">
+                <ul class="list-group">
+					          <p class="list-group-item list-group-item-action card-footer" style="font-size: 25px;">All Topics</p>
                     {% for i in tag %}
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
+                    <li class="list-group-item list-group-item-action">
+                      <img alt="tag" src="{{ i.tag_pic.url }}" style="margin-right: 10px;" class="small-img"/>
+                        <a href="{% url 'TagPage' i.id %}">{{i.name}}</a>
                     </li>
                     {% endfor %}
-                  </ul>
-
-          </nav>  
+                </ul>
+              </div>
 
 
 

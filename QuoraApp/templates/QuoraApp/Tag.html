@@ -5,28 +5,30 @@
           <div class="outer-container">
 
             <!-- Tag Question and Answer -->
-            <div class="card lg-8 tagheader">
+            <div class="lg-8 tagheader">
               <!-- Tag description -->
-                <img class="card-img-top" src="sampletag.jfif" alt="Card image cap">
-                <div style="display:flex,justify-content:centre, ">
-                {% if follow %}
-                <button type="button"  class="btn btn-danger follow-unfollow" id="unfollow" data-catid="{{cat_id}}">UnFollow</button>
-                {% else %}
-                <button type="button"  class="btn btn-success follow-unfollow" id="follow" data-catid="{{cat_id}}">Follow</button>
-                {% endif %}
-                 </div>
-                <div class="card-body">
-                  <h5 class="card-title">{{tag.name}}</h5>
-                  <p class="card-text">{{tag.description}}</p>
-                    <span class="badge rounded-pill bg-warning text-dark">Followed By:{{ tag.following_set.count }}</span>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <div class="card">
+                  <img class="card-img-top" src="{{ tag.tag_pic.url }}" alt="Card image cap">
+                  <div style="display:flex; justify-content:centre">
+                  {% if follow %}
+                  <button type="button"  class="btn btn-danger follow-unfollow" id="unfollow" data-catid="{{cat_id}}">UnFollow</button>
+                  {% else %}
+                  <button type="button"  class="btn btn-success follow-unfollow" id="follow" data-catid="{{cat_id}}">Follow</button>
+                  {% endif %}
+                   </div>
+                  <div class="card-body">
+                    <h5 class="card-title" style="font-size: 25px;">{{tag.name}}</h5>
+                    <p class="card-text">{{tag.description}}</p>
+                      <span class="badge rounded-pill bg-warning text-dark">Followed By:{{ tag.following_set.count }}</span>
+                  </div>
                 </div>
 
                 <!-- User Space -->
+                
                 <div class="card-header tagheaderuser">
                     <img src="{{ request.user.member.profile_pic.url }}"/>
                     <p>Say Something</p>
-                  </div>
+                </div>
 
                   <!-- Question description -->
                      {% for i in answers %}
@@ -41,10 +43,14 @@
                   </div>
 
                   <!-- Answer For Question -->
+                  <div class="card">
+                    <div class="card-header">
+                      <p>{{ i.answeredBy }} answered {{ i.creationTime }}</p>
+                    </div>
+                  </div>
 
                   <div class="card">
                     <div class="card-body ques">
-                        <p>{{i.answeredBy.name}} answered {{i.creationTime}}</p>
                       <p class="card-text">
                         {{i.answer|safe}}
 
@@ -111,14 +117,15 @@
 
           </div>
 
-          <!-- Following People card -->
-          <div class="card bg-light lg-4" style="max-width: 18rem;">
-            <div class="card-header">Computer Science</div>
-            <div class="card-body">
-              <h5 class="card-title">People 13.6k</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <div class="col-lg-2 rightbar">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Follow topics you know about</h5>
+                <p class="card-text">Following topics helps us find questions for you to answer</p>
+                <a href="{% url 'Following' %}" class="btn btn-primary">Follow Topics</a>
+              </div>
             </div>
-          </div>
+          </div>  
 
           </div>
 

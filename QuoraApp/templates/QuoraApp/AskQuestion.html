@@ -3,16 +3,6 @@
 
 
     <div class="outer-container">
-      <div class="col-lg-2 leftbar">
-      <p style="font-size: 25px;">Questions</p>
-      <div id="list-example" class="list-group ">
-          <a class="list-group-item list-group-item-action" href="#list-item-2">Questions for you</a>
-          <a class="list-group-item list-group-item-action" href="#list-item-3">Answer requests</a>
-          <a class="list-group-item list-group-item-action" href="#list-item-4">Answer draft</a>
-        </div>
-
-      </div>
-
       <div class="col-lg-6">
         <div class="card mb-5" style="max-height: 400px">
           <div class="alert alert-primary" style="margin: 10px;" role="alert">
@@ -56,14 +46,14 @@
         {% endfor %}
       </div>
 
-    <div class="col-lg-2 rightbar">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Add topics you know about</h5>
-          <p class="card-text">Adding topics helps us find questions for you to answer</p>
-          <a href="#" class="btn btn-primary">Add Topics</a>
+      <div class="col-lg-2 rightbar">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Follow topics you know about</h5>
+            <p class="card-text">Following topics helps us find questions for you to answer</p>
+            <a href="{% url 'Following' %}" class="btn btn-primary">Follow Topics</a>
+          </div>
         </div>
-      </div>
-    </div>    
+      </div>    
   </div>
 {% endblock %}

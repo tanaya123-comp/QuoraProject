@@ -6,31 +6,74 @@
                     <h5>{{request.user.username}}, you have answered these questions...</h5>
                 </div>
                   {% for i in answers %}
-                <div class="card mt-4">
+                <div class="card mt-4" id="div{{ i.question.id }}">
                   <div class="card-header tagmiddle">
-                    <img src="Pizza.jpg"/>
+                    <img src="{{ i.question.askedBy.profile_pic.url }}"/>
                     <span>{{ i.question.askedBy.name }} asked {{ i.question.creationTime }}</span>
                     <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
                     <span class="badge rounded-pill bg-warning text-dark">{{ i.question.tag }}</span>
                   </div>
-                  <div class="card-body ques">
+                  <div class="card-header tagmiddle">
                     <p>{{ i.answeredBy }} answered {{ i.creationTime }}</p>
+                  </div>
+                  <div class="card-body ques">
                     <p class="card-text">{{i.answer|safe}}</p>
-                   <div class="bottommiddle">
-                    <button type="button" class="btn btn-success"><a class="upvote" data-catid="{{ i.id }}" style="color:white;" href="#">Upvote</a></button>
-                    <button type="button" class="btn btn-danger"><a class="downvote" data-catid="{{ i.id }}" style="color:white;" href="#">DownVote</a></button>
+                    <div class="bottommiddle" style="display:flex">
+
+                       {% for yu in up %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <p id="up{{i.id}}">
+                       {% if yu in pres %}
+
+                        <button type="button" disabled="true" id="disup{{i.id}}"  class="btn btn-success"><a class="upvote"    data-catid="{{ i.id }}" style="color:white" >UpVoted <i class="fa fa-thumbs-up"></i></a></button>
+                       {% else %}
+
+                       <button type="button"  class="btn btn-outline-success" id="ableup{{i.id}}"><a class="upvote"  data-catid="{{ i.id }}" >UpVote <i class="fa fa-thumbs-up"></i></a></button>
+
+                       {% endif %}
+                           </p>
+                        {% endif %}
+                       {% endfor %}
+
+                       {% for yd in down %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                         <p id="dw{{i.id}}">
+                       {% if yd in pres %}
+
+                        <button type="button" disabled="true" class="btn btn-danger" id="disdw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" style="color:white" >DownVoted <i class="fa fa-thumbs-down"></i></a></button>
+
+
+                       {% else %}
+
+                       <button type="button"  class="btn btn-outline-danger" id="abledw{{i.id}}"><a class="downvote"  data-catid="{{ i.id }}" >DownVote <i class="fa fa-thumbs-down"></i></a></button>
+
+                       {% endif %}
+                              </p>
+                       {% endif %}
+                       {% endfor %}
 
                    <button type="button" class="btn btn-primary">
-                       <a style="color:white;" href="{% url 'submitanswer' i.question.id %}">
-                             Answer
+                       <a style="color:white;" href="{% url 'editAnswer' i.question.id %}">
+                             Edit
                        </a>
                     </button>
-
-                    <!-- Modal -->
-
-
-
-                   </div>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger delete_ans" data-catid="{{ i.question.id }}">
+                          Delete Answer
+                        </button>
+                     </div>
+                      <p>
+                       {% for u in upvote %}
+                       {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <span class="badge rounded-pill bg-warning text-dark" id="upvotes{{i.id}}">Upvotes:{{u}}</span>
+                       {% endif %}
+                       {% endfor %}
+                       {% for k in downvote %}
+                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                       <span class="badge rounded-pill bg-warning text-dark" id="downvotes{{i.id}}">DownVotes:{{k}}</span>
+                       {% endif %}
+                       {% endfor %}
+                       </p>
                   </div>
 
                 </div>
@@ -40,3 +83,113 @@
           </div>
 
 {% endblock %}
+{% block scripts %}
+
+$('body').on('click', 'button.delete_ans', function(){
+    var catid = $(this).attr("data-catid");
+    $.ajax({
+        type: "GET",
+        url: "/deleteAnswer/",
+        data: {
+            post_id: catid
+        },
+        success: function(data)
+        {
+            console.log(data);
+            $(`#div${catid}`).remove();
+        }
+
+    })
+});
+
+$('body').on('click','a.upvote',function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "/upvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log(data);
+            let btnClass = $('#dw'+catid + ' :button').attr('class');
+            let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+            let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+            console.log(btnClass);
+            if(btnClass === 'btn btn-danger') {
+              downCnt -= 1;
+            } else {
+              console.log($(`#upvotes${catid}`).text());
+            }
+            upCnt += 1;
+            $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+            $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
+
+            $( '#up'+ catid ).empty();
+            $('#up'+catid).append(
+                `<button type="button" disabled="true" id="disup${catid}"  class="btn btn-success"><a class="upvote"  data-catid="${catid}" style="color:white" >UpVoted <i class="fa fa-thumbs-up"></i></a></button>`
+            );
+<!--            $('#disdw'+catid).remove();-->
+<!--            $('#abledw+catid).remove();-->
+                $('#dw'+catid).empty();
+          $('#dw'+catid).append(
+             `<button type="button"  class="btn btn-outline-danger" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" >DownVote <i class="fa fa-thumbs-down"></i></a></button>`
+          );
+
+
+        }
+     })
+
+
+
+
+});
+
+$('body').on('click','a.downvote',function(){
+    var catid;
+    catid = $(this).attr("data-catid");
+    $.ajax(
+    {
+        type:"GET",
+        url: "/downvote/",
+        data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log(data);
+             let btnClass = $('#up'+catid + ' :button').attr('class');
+             let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+             let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+             if(btnClass === 'btn btn-success') {
+                upCnt -= 1;
+             } else {
+                console.log($(`#upvotes${catid}`).text());
+             }
+             downCnt += 1;
+             $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+             $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
+
+             $( '#dw'+ catid ).empty();
+             $('#dw'+catid).append(
+                `<button type="button" disabled="true" class="btn btn-danger" id="disdw${catid}"><a class="downvote"  data-catid="${catid}" style="color:white" >DownVoted <i class="fa fa-thumbs-down"></i></a></button>`
+            );
+<!--            $('#ableup'+catid).remove();-->
+<!--            $('#disup'+catid).remove();-->
+            $('#up'+catid).empty();
+            $('#up'+catid).append(
+              `<button type="button"  class="btn btn-outline-success" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" >UpVote <i class="fa fa-thumbs-up"></i></a></button>`
+            );
+        }
+     })
+});
+
+
+
+
+
+
+{% endblock scripts %}

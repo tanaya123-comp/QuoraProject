@@ -22,7 +22,7 @@ class Tag(models.Model):
     id = models.AutoField(primary_key=True)
     name=models.CharField(max_length=200,null=True)
     description=models.CharField(max_length=200,null=True)
-    tag_pic = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    tag_pic = models.ImageField(upload_to='tags/', null=True, blank=True, default='default_tag.png')
 
     def __str__(self):
         return self.name
@@ -49,9 +49,9 @@ class Answer(models.Model):
     
 class Vote(models.Model):
     id = models.AutoField(primary_key=True)
-    answer=models.ForeignKey(Answer,null=True,on_delete=models.SET_NULL)
+    answer=models.ForeignKey(Answer,null=True,on_delete=models.CASCADE)
     vote=models.IntegerField()# 1-up vote 2-down vote
-    votedBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
+    votedBy=models.ForeignKey(Member,null=True,on_delete=models.CASCADE)
 
 class Employee(models.Model):
     member=models.ForeignKey(Member, on_delete=models.CASCADE)

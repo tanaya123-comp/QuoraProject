@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import (HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion,
                         IndividualQuestion, Profile,upVote,downVote,submitAnswer,
-                        following, UnfollowHandle, FollowHandle, MyAnswers,getupvote,getdownvote)
+                        following, UnfollowHandle, FollowHandle, MyAnswers,getupvote,getdownvote, editAnswer, deleteAnswer)
 
 urlpatterns = [
     path('',HomePage,name="HomePage"),
@@ -26,5 +26,7 @@ urlpatterns = [
     path('myanswers/', MyAnswers, name='MyAnswers'),
     path('getupvote/',getupvote,name="getupvote"),
     path('getdownvote/',getdownvote,name="getdownvote"),
+    path('editAnswer/<str:pk>', editAnswer, name='editAnswer'),
+    path('deleteAnswer/', deleteAnswer, name='deleteAnswer'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

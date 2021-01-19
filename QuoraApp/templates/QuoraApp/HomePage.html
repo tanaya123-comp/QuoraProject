@@ -1,19 +1,18 @@
 {%  extends 'QuoraApp/main.html' %}
 {% block content %}
           <div class="outer-container">
-              <nav class="navbar navbar-light bg-light col-lg-2 leftbar">
-                  Tags that you follow...
-                    <ul class="navbar-nav">
-                        {% for i in following %}
-                        <li class="nav-item tag">
-                            <img alt="tag" src="{{ i.tag.tag_pic }}"/>
-                            <a class="nav-link" href="{% url 'TagPage' i.tag.id %}">{{i.tag.name}}</a>
-                        </li>
-                        {% endfor %}
-
-                    </ul>
-
-              </nav>
+            <div class="col-lg-2 leftbar">
+              
+              <ul class="list-group">
+                <p class="list-group-item list-group-item-action card-footer" style="font-size: 25px;">Tags that you follow...</p>
+                  {% for i in following %}
+                  <li class="list-group-item list-group-item-action">
+                      <img alt="tag" src="{{ i.tag.tag_pic.url }}" style="margin-right: 10px;" class="small-img"/>
+                      <a href="{% url 'TagPage' i.tag.id %}">{{i.tag.name}}</a>
+                  </li>
+                  {% endfor %}
+              </ul>
+            </div>
               <div class="col-lg-6">
                 <div class="card">
                   <div class="card-header headermiddle">
@@ -35,8 +34,10 @@
                     <h5 class="card-title"><a href="{% url 'Question' i.question.id %}">{{i.question.description}}</a></h5>
                     <span class="badge rounded-pill bg-warning text-dark">{{ i.question.tag }}</span>
                   </div>
-                  <div class="card-body ques">
+                  <div class="card-header tagmiddle">
                     <p>{{ i.answeredBy }} answered {{ i.creationTime }}</p>
+                  </div>
+                  <div class="card-body ques">
                     <p class="card-text">{{i.answer|safe}}</p>
                    <div class="bottommiddle" style="display:flex">
 
@@ -99,17 +100,17 @@
                 {% endfor %}
 
               </div>
-              <nav class="navbar navbar-light bg-light col-lg-2 rightbar">
-                <ul class="navbar-nav ">
+              <div class="col-lg-2 rightbar">
+                <ul class="list-group">
+					          <p class="list-group-item list-group-item-action card-footer" style="font-size: 25px;">All Topics</p>
                     {% for i in tag %}
-                    <li class="nav-item tag">
-                      <img alt="tag" src="sampletag.jfif"/>
-                        <a class="nav-link" href="{% url 'TagPage' i.id %}">{{i.name}}</a>
+                    <li class="list-group-item list-group-item-action">
+                      <img alt="tag" src="{{ i.tag_pic.url }}" style="margin-right: 10px;" class="small-img"/>
+                        <a href="{% url 'TagPage' i.id %}">{{i.name}}</a>
                     </li>
                     {% endfor %}
                 </ul>
-
-          </nav>
+              </div>
 
 
 

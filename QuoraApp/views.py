@@ -14,29 +14,33 @@ from django.contrib import messages
 # Create your views here.
 
 
+def utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member):
+    for i in answers:
+        upvote.append(Vote.objects.filter(answer=i, vote=1).count())
+        downvote.append(Vote.objects.filter(answer=i, vote=2).count())
+
+    print(upvote)
+    print(downvote)
+
+    for i in answers:
+        youupvote.append(Vote.objects.filter(answer=i, vote=1, votedBy=member).count())
+        youdownvote.append(Vote.objects.filter(answer=i, vote=2, votedBy=member).count())
+
+    print(youupvote)
+    print(youdownvote)
+
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def HomePage(request):
     tag=Tag.objects.all()
     following=Following.objects.filter(member__exact=request.user.member)
     answers=Answer.objects.all()
+    member = request.user.member
     upvote=[]
     downvote=[]
-    for i in answers:
-        upvote.append(Vote.objects.filter(answer=i,vote=1).count())
-        downvote.append(Vote.objects.filter(answer=i,vote=2).count())
-
-    print(upvote)
-    print(downvote)
-
     youupvote=[]
     youdownvote=[]
-    for i in answers:
-        youupvote.append(Vote.objects.filter(answer=i,vote=1,votedBy=request.user.member).count())
-        youdownvote.append(Vote.objects.filter(answer=i,vote=2,votedBy=request.user.member).count())
-
-    print(youupvote)
-    print(youdownvote)
+    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
 
     pres=[1,2]
 
@@ -117,6 +121,7 @@ def AnswerPage(request):
 def TagPage(request,pk):
     tag=Tag.objects.get(id=pk)
     answers=Answer.objects.filter(tag=tag)
+    member = request.user.member
 
     follow = False
     if Following.objects.filter(member=request.user.member,tag=tag):
@@ -124,27 +129,15 @@ def TagPage(request,pk):
 
     upvote = []
     downvote = []
-    for i in answers:
-        upvote.append(Vote.objects.filter(answer=i, vote=1).count())
-        downvote.append(Vote.objects.filter(answer=i, vote=2).count())
-
-    print(upvote)
-    print(downvote)
-
     youupvote = []
     youdownvote = []
-    for i in answers:
-        youupvote.append(Vote.objects.filter(answer=i, vote=1, votedBy=request.user.member).count())
-        youdownvote.append(Vote.objects.filter(answer=i, vote=2, votedBy=request.user.member).count())
-
-    print(youupvote)
-    print(youdownvote)
+    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
 
     pres = [1, 2]
 
     print(answers)
     form=AnswerForm()
-    return render(request,'QuoraApp/Tag.html',{'answers':answers,'form':form,'follow':follow, 'cat_id':pk,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres})
+    return render(request,'QuoraApp/Tag.html',{'tag': tag, 'answers':answers,'form':form,'follow':follow, 'cat_id':pk,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres})
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
@@ -240,6 +233,24 @@ def submitAnswer(request,pk):
     return render(request,'QuoraApp/submitAnswer.html',{'form':form})
 
 
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def editAnswer(request, pk):
+    question = Question.objects.get(id=pk)
+    answeredBy = request.user.member
+    answer = Answer.objects.get(question=question, answeredBy=answeredBy)
+    form = AnswerForm(instance=answer)
+    if request.method == 'POST':
+        query_dict = request.POST
+        answer2 = query_dict.get('answer')
+        answer.answer = answer2
+        answer.save()
+        messages.success(request, f"Answer Modified!!")
+        return redirect('HomePage')
+    context = {
+        'form': form,
+    }
+    return render(request, 'QuoraApp/submitAnswer.html', context)
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
@@ -273,27 +284,16 @@ def IndividualQuestion(request, pk):
     question = Question.objects.filter(id__exact=pk)[0]
 
     # Fetch all the answers to that question
-    all_answers = Answer.objects.filter(question__exact=question)
+    answers = Answer.objects.filter(question__exact=question)
+    member = request.user.member
 
     tag = Tag.objects.all()
 
     upvote = []
     downvote = []
-    for i in all_answers:
-        upvote.append(Vote.objects.filter(answer=i, vote=1).count())
-        downvote.append(Vote.objects.filter(answer=i, vote=2).count())
-
-    print(upvote)
-    print(downvote)
-
     youupvote = []
     youdownvote = []
-    for i in all_answers:
-        youupvote.append(Vote.objects.filter(answer=i, vote=1, votedBy=request.user.member).count())
-        youdownvote.append(Vote.objects.filter(answer=i, vote=2, votedBy=request.user.member).count())
-
-    print(youupvote)
-    print(youdownvote)
+    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
 
     pres = [1, 2]
 
@@ -303,7 +303,7 @@ def IndividualQuestion(request, pk):
     # Populate one question with many answers...
     context = {
         'question' : question,
-        'all_answers' : all_answers,
+        'all_answers' : answers,
         'tag': tag,
         'form':form,
         'upvote': upvote,
@@ -433,10 +433,19 @@ def FollowHandle(request):
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def MyAnswers(request):
+    tag = Tag.objects.all()
+    following = Following.objects.filter(member__exact=request.user.member)
     answers = Answer.objects.filter(answeredBy__exact=request.user.member)
-    context = {
-        'answers': answers,
-    }
+    member = request.user.member
+    upvote=[]
+    downvote=[]
+    youupvote=[]
+    youdownvote=[]
+    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
+    pres=[1,2]
+
+    context = {'tag': tag, 'answers': answers, "following": following, 'upvote': upvote, 'downvote': downvote,
+                  'up': youupvote, 'down': youdownvote, 'pres': pres}
     return render(request, 'QuoraApp/MyAnswers.html', context)
 
 
@@ -455,3 +464,12 @@ def getdownvote(request):
         ans = Answer.objects.get(id=pk)
 
         return HttpResponse(Vote.objects.filter(answer=ans, vote=2).count())
+
+
+def deleteAnswer(request):
+    ques_id = request.GET['post_id']
+    question = Question.objects.get(id=ques_id)
+    member = request.user.member
+    answer = Answer.objects.get(question=question, answeredBy=member)
+    answer.delete()
+    return HttpResponse("<h1>Deleted successfull</h1>")

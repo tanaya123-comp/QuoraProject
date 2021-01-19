@@ -16,12 +16,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    padding: 0px 0px;
 }
 
 .rightbar {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .tag{
@@ -37,6 +40,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    align-items: baseline;
 }
 
 .ques img{
@@ -58,4 +62,18 @@ body {
 .bottommiddle img{
     height: 40px;
     width: 60px;
+}
+
+.small-img {
+    height: 30px;
+    width: 30px;
+}
+
+.who-answered {
+    border-bottom: 1px solid black;
+}
+
+.btn {
+    margin-left: 10px;
+    margin-right: 10px;
 }
