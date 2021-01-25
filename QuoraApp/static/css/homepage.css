@@ -77,3 +77,9 @@ body {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.page-bar {
+    position: fixed;
+    bottom: 0;
+    right: 30px;
+}

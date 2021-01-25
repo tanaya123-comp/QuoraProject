@@ -10,6 +10,7 @@ from .decorators import only_unauthenticated_users_allowed, only_admin_allowed, 
 from .forms import PostForm,TinyMCEWidget,AnswerForm
 
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
@@ -34,17 +35,27 @@ def utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, m
 def HomePage(request):
     tag=Tag.objects.all()
     following=Following.objects.filter(member__exact=request.user.member)
+
     answers=Answer.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(answers, 5)
+    try:
+        answer_list = paginator.page(page)
+    except PageNotAnInteger:
+        answer_list = paginator.page(1)
+    except EmptyPage:
+        answer_list = paginator.page(paginator.num_pages)
+
     member = request.user.member
     upvote=[]
     downvote=[]
     youupvote=[]
     youdownvote=[]
-    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
+    utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answer_list, member)
 
     pres=[1,2]
 
-    dictionary={'tag':tag,'answers':answers,"following":following,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres}
+    dictionary={'tag':tag,'answers':answer_list,"following":following,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
