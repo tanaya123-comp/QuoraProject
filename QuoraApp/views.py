@@ -11,6 +11,7 @@ from .forms import PostForm,TinyMCEWidget,AnswerForm
 
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .filters import TagFilter
 
 # Create your views here.
 
@@ -36,7 +37,21 @@ def HomePage(request):
     tag=Tag.objects.all()
     following=Following.objects.filter(member__exact=request.user.member)
 
-    answers=Answer.objects.all()
+    myfilter=TagFilter(request.GET,queryset=tag)
+
+
+    tagname=request.GET.get('name')
+
+    print(tagname)
+
+    if tagname is "":
+        answers = Answer.objects.all()
+
+    elif tagname is not None:
+        answers=Answer.objects.filter(tag__name=tagname)
+    else:
+        answers=Answer.objects.all()
+
     page = request.GET.get('page', 1)
     paginator = Paginator(answers, 5)
     try:
@@ -55,7 +70,9 @@ def HomePage(request):
 
     pres=[1,2]
 
-    dictionary={'tag':tag,'answers':answer_list,"following":following,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres}
+    search=True
+
+    dictionary={'tag':tag,'answers':answer_list,"following":following,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres,'myfilter':myfilter,'search':search}
     return render(request,'QuoraApp/HomePage.html',dictionary)
 
 
@@ -108,8 +125,23 @@ def Logout(request):
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def AnswerPage(request):
-    answers=Answer.objects.all()
-    questions=Question.objects.all()
+    tag=Tag.objects.all()
+    myfilter = TagFilter(request.GET, queryset=tag)
+    tagname = request.GET.get('name')
+
+    if tagname is "":
+        answers = Answer.objects.all()
+        questions=Question.objects.all()
+
+    elif tagname is not None:
+        answers=Answer.objects.filter(tag__name=tagname)
+        questions=Question.objects.filter(tag__name=tagname)
+    else:
+        answers=Answer.objects.all()
+        questions = Question.objects.all()
+
+   # answers=Answer.objects.all()
+    #questions=Question.objects.all()
     question=[]
     for i in questions:
         x=0
@@ -123,10 +155,11 @@ def AnswerPage(request):
     
 
     form=AnswerForm()
+    search=True
 
-    return render(request,'QuoraApp/AnswerPage.html',{'questions':question,'form':form})
+    return render(request,'QuoraApp/AnswerPage.html',{'questions':question,'form':form,'myfilter':myfilter,'search':search})
 
-
+#search bar not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def TagPage(request,pk):
@@ -145,10 +178,11 @@ def TagPage(request,pk):
     utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
 
     pres = [1, 2]
-
+    myfilter = TagFilter()
     print(answers)
     form=AnswerForm()
-    return render(request,'QuoraApp/Tag.html',{'tag': tag, 'answers':answers,'form':form,'follow':follow, 'cat_id':pk,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres})
+    search=False
+    return render(request,'QuoraApp/Tag.html',{'tag': tag, 'answers':answers,'form':form,'follow':follow, 'cat_id':pk,'upvote':upvote,'downvote':downvote,'up':youupvote,'down':youdownvote,'pres':pres,'myfilter':myfilter,'search':search})
 
 @login_required(login_url='Register')
 @only_normal_users_allowed
@@ -222,13 +256,15 @@ def downVote(request):
 
         return HttpResponse("<h1>downvote successfull</h1>")
 
-
+#search bar not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def submitAnswer(request,pk):
     print(pk)
     question = Question.objects.get(id=pk)
+    search=False
     form = AnswerForm()
+    myfilter = TagFilter()
     if request.method == 'POST':
        query_dict=request.POST
        answer2=query_dict.get('answer')
@@ -241,9 +277,12 @@ def submitAnswer(request,pk):
        messages.success(request, f"Answer Submitted!")
        return redirect('HomePage')
 
-    return render(request,'QuoraApp/submitAnswer.html',{'form':form})
 
 
+    return render(request,'QuoraApp/submitAnswer.html',{'form':form,'myfilter':myfilter,'search':search})
+
+
+#search bar not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def editAnswer(request, pk):
@@ -251,6 +290,7 @@ def editAnswer(request, pk):
     answeredBy = request.user.member
     answer = Answer.objects.get(question=question, answeredBy=answeredBy)
     form = AnswerForm(instance=answer)
+    search=False
     if request.method == 'POST':
         query_dict = request.POST
         answer2 = query_dict.get('answer')
@@ -260,7 +300,9 @@ def editAnswer(request, pk):
         return redirect('HomePage')
     context = {
         'form': form,
+        'search':search
     }
+
     return render(request, 'QuoraApp/submitAnswer.html', context)
 
 @login_required(login_url='Register')
@@ -268,9 +310,24 @@ def editAnswer(request, pk):
 def AskQuestion(request):
     ques_form = QuestionForm()
 
+
     # Also, we need to list all the questions that the user has asked
     member = request.user.member
-    all_questions = Question.objects.filter(askedBy__exact=member)
+
+    tag = Tag.objects.all()
+    myfilter = TagFilter(request.GET, queryset=tag)
+    tagname = request.GET.get('name')
+
+    if tagname is "":
+        all_questions = Question.objects.filter(askedBy__exact=member)
+
+    elif tagname is not None:
+        all_questions = Question.objects.filter(askedBy__exact=member,tag__name=tagname)
+
+    else:
+        all_questions = Question.objects.filter(askedBy__exact=member)
+
+
 
     if request.method == 'POST':
         ques_form = QuestionForm(request.POST)
@@ -281,13 +338,19 @@ def AskQuestion(request):
             messages.success(request, f"Your Question was noted")
         else:
             messages.error(request, ques_form.errors)
+
+    search=True
+
     context = {
         'form': ques_form,
         'all_questions': all_questions,
+        'myfilter':myfilter,
+        'search':search
     }
     return render(request, 'QuoraApp/AskQuestion.html', context)
 
 
+#search bar not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def IndividualQuestion(request, pk):
@@ -299,6 +362,7 @@ def IndividualQuestion(request, pk):
     member = request.user.member
 
     tag = Tag.objects.all()
+    myfilter = TagFilter()
 
     upvote = []
     downvote = []
@@ -307,6 +371,8 @@ def IndividualQuestion(request, pk):
     utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
 
     pres = [1, 2]
+
+    search=False
 
     form=AnswerForm()
 
@@ -322,17 +388,23 @@ def IndividualQuestion(request, pk):
         'up': youupvote,
         'down': youdownvote,
         'pres': pres,
+        'myfilter':myfilter,
+        'search':search
     }
 
     return render(request, 'QuoraApp/IndividualQuestion.html', context)
 
 
+#search not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def Profile(request):
     # Fetch the current user and prepare ProfileForm
     profile = request.user.member
     form = ProfileForm(instance=profile)
+
+    search=False
+
 
     # Check whether that Member has Educational/Job Details
     employee_detail = Employee.objects.filter(member__exact=profile)
@@ -395,6 +467,7 @@ def Profile(request):
         'numQues': num_ques,
         'num_tags': num_tags,
         'num_answers': num_answers,
+        'search':search
     }
     if role == 'None':
         # When the user hasn't filled any details, we should pass 2 blank forms for modals
@@ -404,6 +477,7 @@ def Profile(request):
     return render(request, 'QuoraApp/Profile.html', context)
 
 
+#search bar not required
 @login_required(login_url='Register')
 @only_normal_users_allowed
 def following(request):
@@ -413,9 +487,11 @@ def following(request):
     print(following_tags_ids)
     remaining_tag = Tag.objects.exclude(id__in=following_tags_ids)
     print(remaining_tag)
+    search=False
     context = {
         'tag': remaining_tag,
         'following_tags': following_tags,
+        'search':search
     }
     return render(request, 'QuoraApp/Followings.html', context)
 
@@ -445,18 +521,33 @@ def FollowHandle(request):
 @only_normal_users_allowed
 def MyAnswers(request):
     tag = Tag.objects.all()
-    following = Following.objects.filter(member__exact=request.user.member)
-    answers = Answer.objects.filter(answeredBy__exact=request.user.member)
+    myfilter = TagFilter(request.GET, queryset=tag)
+    tagname = request.GET.get('name')
     member = request.user.member
+
+    if tagname is "":
+        answers = Answer.objects.filter(answeredBy__exact=request.user.member)
+
+    elif tagname is not None:
+        answers = Answer.objects.filter(answeredBy__exact=request.user.member,tag__name=tagname)
+
+    else:
+        answers = Answer.objects.filter(answeredBy__exact=request.user.member)
+
+    following = Following.objects.filter(member__exact=request.user.member)
+
+
     upvote=[]
     downvote=[]
     youupvote=[]
     youdownvote=[]
     utility_upvote_downvote(upvote, downvote, youupvote, youdownvote, answers, member)
     pres=[1,2]
+    search=True
+
 
     context = {'tag': tag, 'answers': answers, "following": following, 'upvote': upvote, 'downvote': downvote,
-                  'up': youupvote, 'down': youdownvote, 'pres': pres}
+                  'up': youupvote, 'down': youdownvote, 'pres': pres,'myfilter':myfilter,'search':search}
     return render(request, 'QuoraApp/MyAnswers.html', context)
 
 

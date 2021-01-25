@@ -47,10 +47,14 @@
                   </li>
 
               </ul>
-              <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                {% if search is True %}
+              <form class="form-inline my-2 my-lg-0" method="get">
+                {{myfilter.form}}
+
                 <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
               </form>
+                {% endif %}
+
                 <h5 style="margin: auto 25px auto 25px">{{request.user.username}}</h5>
                 <span><a class="btn btn-danger" href="{% url 'Logout' %}">Logout</a></span>
             </div>

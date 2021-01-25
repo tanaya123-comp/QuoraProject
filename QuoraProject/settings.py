@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'QuoraApp',
     'tinymce',
     'ckeditor',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
