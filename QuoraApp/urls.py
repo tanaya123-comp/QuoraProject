@@ -3,7 +3,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import (HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion,
                         IndividualQuestion, Profile,upVote,downVote,submitAnswer,
-                        following, UnfollowHandle, FollowHandle, MyAnswers,getupvote,getdownvote, editAnswer, deleteAnswer,clearVote)
+                        following, UnfollowHandle, FollowHandle, MyAnswers,getupvote,
+                        getdownvote, editAnswer, deleteAnswer,clearVote, user_followings,
+                        FollowUserHandle, UnfollowUserHandle)
 
 urlpatterns = [
     path('',HomePage,name="HomePage"),
@@ -29,5 +31,8 @@ urlpatterns = [
     path('editAnswer/<str:pk>', editAnswer, name='editAnswer'),
     path('deleteAnswer/', deleteAnswer, name='deleteAnswer'),
     path('clearvote/',clearVote,name='clearVote'),
+    path('user_following/', user_followings, name='UserFollowings'),
+    path('follow_user_handle/', FollowUserHandle, name='FollowUserHandle'),
+    path('unfollow_user_handle/', UnfollowUserHandle, name='UnfollowUserHandle'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

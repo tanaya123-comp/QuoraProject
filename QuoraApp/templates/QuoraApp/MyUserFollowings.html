@@ -1,0 +1,84 @@
+{%  extends 'QuoraApp/main.html' %}
+{% block content %}
+    <div class="outer-container">
+        <div class="col-lg-3 leftbar">
+            <p id="message"></p>
+            <ul class="list-group">
+                <p class="list-group-item list-group-item-action card-footer" style="font-size: 25px;">Other People to follow...</p>
+                {% for each_user in remainings %}
+                <li class="list-group-item list-group-item-action" id="list{{ each_user.id }}">
+                    <img alt="tag" src="{{ each_user.profile_pic.url }}" style="margin-right: 10px;" class="small-img"/>
+                    <span>{{ each_user.name }}</span>
+                    <span><button class="btn btn-success follow" data-catid="follow{{ each_user.id }}">Follow</button></span>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        <div class="col-lg-6">
+            <h5 class="alert alert-primary">{{ request.user }}, you follow these People...</h5>
+            {% for each_user in followings %}
+                <div class="card mb-3" style="max-width: 540px; max-height: 240px;" id="card{{ each_user.id }}">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{ each_user.profile_pic.url }}" alt="Image" class="card-img-top">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ each_user.name }}</h5>
+                                <button type="button"
+                                class="btn btn-danger">
+                                    <a class="unfollow"
+                                    data-catid="unfollow{{ each_user.id }}"
+                                    style="color:white;"
+                                    href="#">Unfollow
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    $(".unfollow").click(function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+        catid = catid.slice(8);
+        $.ajax(
+            {
+                type: "GET",
+                url: "/unfollow_user_handle",
+                data: {
+                    post_id: catid
+                },
+                success: function(data) {
+                    console.log(data);
+                }
+            }
+        )
+        
+    });
+    $(".follow").click(function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+        catid = catid.slice(6);
+        $.ajax(
+            {
+                type: "GET",
+                url: "/follow_user_handle",
+                data:{
+                    post_id: catid
+                },
+                success: function(data) {
+                    console.log(data);
+                }
+            }
+        )
+    })
+
+{% endblock scripts %}

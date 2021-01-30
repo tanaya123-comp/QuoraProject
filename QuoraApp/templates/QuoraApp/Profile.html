@@ -10,10 +10,17 @@
                 <div class="col-lg-3 card profile-card mx-1">
                     <img src="{{request.user.member.profile_pic.url}}"  class="card-img-top"/>
                     <p class="card-text">{{ form.profile_pic }}</p>
-
-                    <div class="card-body">
-                    <h4 class="card-title">{{ request.user }}</h4>
-                    <p class="card-text">Date joined: {{request.user.date_joined}}</p>
+                    <div>
+                        <h4 style="text-align: center;">{{ request.user }}</h4>
+                        <p class="card-text">Date joined: {{request.user.date_joined}}</p>
+                        <div style="display: flex;">
+                            <a href="{% url 'UserFollowings' %}" class="btn btn-primary" style="margin-bottom:  5px;">
+                                Followers <span class="badge bg-secondary">{{ num_followers }}</span>
+                            </a>
+                            <a href="#" class="btn btn-primary" style="margin-bottom:  5px;">
+                                Following <span class="badge bg-secondary">{{ num_following }}</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -176,7 +183,7 @@
                 <!-- Questions, ans, following stats -->
                 <div class="col-lg-7 more-stats mx-1">
                     <div class="card text-dark bg-light mb-3 col-lg-4" style="max-width: 18rem;">
-                        <div class="card-header">Following</div>
+                        <div class="card-header">Tags Following</div>
                         <div class="card-body">
                             <h1 class="card-title">{{ num_tags }}</h1>
                             <a href="{% url 'Following' %}" class="btn btn-primary">See Tags that you follow</a>

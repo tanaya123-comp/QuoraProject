@@ -13,6 +13,7 @@ class Member(models.Model):
     address=models.CharField(max_length=200,null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profiles/', null=True, blank=True, default='default_profile.png')
     date_created = models.DateTimeField(auto_now_add=True, null=True)
+    followers = models.ManyToManyField('self', symmetrical=False, blank=True, null=True)
 
 
     def __str__(self):

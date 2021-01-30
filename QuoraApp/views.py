@@ -502,6 +502,8 @@ def Profile(request):
     num_ques = Question.objects.filter(askedBy__exact=profile).count()
     num_tags = Following.objects.filter(member__exact=profile).count()
     num_answers = Answer.objects.filter(answeredBy__exact=profile).count()
+    num_followers = profile.followers.count()
+    num_following = profile.member_set.count()
     context = {
         'form': form,
         'role': role,
@@ -509,7 +511,9 @@ def Profile(request):
         'numQues': num_ques,
         'num_tags': num_tags,
         'num_answers': num_answers,
-        'search':search
+        'search':search,
+        'num_followers': num_followers,
+        'num_following': num_following,
     }
     if role == 'None':
         # When the user hasn't filled any details, we should pass 2 blank forms for modals
@@ -617,3 +621,29 @@ def deleteAnswer(request):
     answer = Answer.objects.get(question=question, answeredBy=member)
     answer.delete()
     return HttpResponse("<h1>Deleted successfull</h1>")
+
+
+def user_followings(request):
+    profile = request.user.member
+    followings = profile.member_set.all()
+    all_users = Member.objects.all().exclude(id=profile.id)
+    remainings = all_users.difference(followings)
+    context = {
+        'followings': followings,
+        'remainings': remainings,
+    }
+    return render(request, 'QuoraApp/MyUserFollowings.html', context)
+
+def FollowUserHandle(request):
+    pk = request.GET['post_id']
+    member = request.user.member
+    member2 = Member.objects.get(id=pk)
+    member2.followers.add(member)
+    return HttpResponse('Success')
+
+def UnfollowUserHandle(request):
+    pk = request.GET['post_id']
+    member = request.user.member
+    member2 = Member.objects.get(id=pk)
+    member2.followers.remove(member)
+    return HttpResponse('Success')
