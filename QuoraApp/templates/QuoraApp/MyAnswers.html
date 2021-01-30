@@ -19,7 +19,7 @@
                   <div class="card-body ques">
                     <p class="card-text">{{i.answer|safe}}</p>
                     <div class="bottommiddle" style="display:flex">
-
+                                                 <button type="button" class="btn btn-outline-info" ><a class="clearvote2" data-catid="{{ i.id }}">Clear Vote</a></button>
                        {% for yu in up %}
                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
                        <p id="up{{i.id}}">
@@ -187,6 +187,59 @@ $('body').on('click','a.downvote',function(){
      })
 });
 
+$(".clearvote2").click(function(){
+        var catid;
+        catid = $(this).attr("data-catid");
+        console.log('hello');
+        $.ajax(
+        {
+            type:"GET",
+            url: "http://127.0.0.1:8000/clearvote/",
+            data:{
+                 post_id: catid
+        },
+        success: function( data )
+        {
+            console.log(data);
+            if(data=='d')
+            {
+                        let btnClass = $('#up'+catid + ' :button').attr('class');
+                        let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+                        let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+
+                        downCnt -=1;
+                        $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+                        $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
+            }
+            else if(data=='u')
+            {
+                        let btnClass = $('#dw'+catid + ' :button').attr('class');
+                        let upCnt = parseInt($(`#upvotes${catid}`).text().slice(8));
+                        let downCnt = parseInt($(`#downvotes${catid}`).text().slice(10));
+                        console.log(btnClass);
+                        upCnt -= 1;
+                        $(`#upvotes${catid}`).text('Upvotes:'+upCnt.toString());
+                         $(`#downvotes${catid}`).text('DownVotes:'+downCnt.toString());
+                        }
+
+
+
+           $('#up'+catid).empty();
+            $('#up'+catid).append(
+              `<button type="button"  class="btn btn-outline-success" id="ableup${catid}"><a class="upvote"   data-catid="${catid}" >UpVote <i class="fa fa-thumbs-up"></i></a></button>`
+            );
+
+
+                $('#dw'+catid).empty();
+          $('#dw'+catid).append(
+             `<button type="button"  class="btn btn-outline-danger" id="abledw${catid}"><a class="downvote"  data-catid="${catid}" >DownVote <i class="fa fa-thumbs-down"></i></a></button>`
+          );
+
+
+        }
+        })
+
+});
 
 
 

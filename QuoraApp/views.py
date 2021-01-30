@@ -37,20 +37,35 @@ def HomePage(request):
     tag=Tag.objects.all()
     following=Following.objects.filter(member__exact=request.user.member)
 
+
+
+
+
+
     myfilter=TagFilter(request.GET,queryset=tag)
 
 
     tagname=request.GET.get('name')
 
-    print(tagname)
+
 
     if tagname is "":
-        answers = Answer.objects.all()
+        answers2 = Answer.objects.filter(tag__name='')
+        for i in following:
+            answers2 = answers2 | Answer.objects.filter(tag__name=i.tag.name) #union operator is used to combine queryset
+
+        print(answers2)
+        answers = answers2.order_by('-creationTime') # oder by is used to order the objects in queryset by any of it's attribute prefix it by - for descending
 
     elif tagname is not None:
         answers=Answer.objects.filter(tag__name=tagname)
     else:
-        answers=Answer.objects.all()
+        answers2 = Answer.objects.filter(tag__name='')
+        for i in following:
+            answers2=answers2|Answer.objects.filter(tag__name=i.tag.name)
+
+        print(answers2)
+        answers=answers2.order_by('-creationTime')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(answers, 5)
@@ -255,6 +270,33 @@ def downVote(request):
     #print(vote)
 
         return HttpResponse("<h1>downvote successfull</h1>")
+
+@login_required(login_url='Register')
+@only_normal_users_allowed
+def clearVote(request):
+    if request.method == 'GET':
+        pk = request.GET['post_id']
+
+        ans = Answer.objects.get(id=pk)
+
+        if Vote.objects.filter(answer=ans,vote=2, votedBy=request.user.member).exists():
+
+
+             Vote.objects.filter(answer=ans, votedBy=request.user.member).update(vote=0)
+
+             return HttpResponse('d')
+
+        if Vote.objects.filter(answer=ans,vote=1, votedBy=request.user.member).exists():
+
+            Vote.objects.filter(answer=ans, votedBy=request.user.member).update(vote=0)
+
+            return HttpResponse('u')
+
+        else:
+            Vote.objects.filter(answer=ans, votedBy=request.user.member).update(vote=0)
+
+            return HttpResponse('clear vote successfully')
+
 
 #search bar not required
 @login_required(login_url='Register')
