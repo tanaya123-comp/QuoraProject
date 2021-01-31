@@ -9,7 +9,7 @@
                 <li class="list-group-item list-group-item-action" id="list{{ each_user.id }}">
                     <img alt="tag" src="{{ each_user.profile_pic.url }}" style="margin-right: 10px;" class="small-img"/>
                     <span>{{ each_user.name }}</span>
-                    <span><button class="btn btn-success follow" data-catid="follow{{ each_user.id }}">Follow</button></span>
+                    <span><a class="btn btn-success follow-user" href="#" style="color:white;" id="follow{{ each_user.id }}" data-catid="follow{{ each_user.id }}">Follow</a></span>
                 </li>
                 {% endfor %}
 
@@ -28,14 +28,12 @@
                         <div class="col-md-8">
                             <div class="card-body">
                                 <h5 class="card-title">{{ each_user.name }}</h5>
-                                <button type="button"
-                                class="btn btn-danger">
-                                    <a class="unfollow"
-                                    data-catid="unfollow{{ each_user.id }}"
-                                    style="color:white;"
-                                    href="#">Unfollow
-                                    </a>
-                                </button>
+                                <a class="btn btn-danger unfollow-user"
+                                data-catid="unfollow{{ each_user.id }}"
+                                id="unfollow{{ each_user.id }}"
+                                style="color:white;"
+                                href="#">Unfollow
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -45,7 +43,8 @@
     </div>
 {% endblock %}
 {% block scripts %}
-    $(".unfollow").click(function() {
+    
+    $("body").on("click", "a.unfollow-user", function() {
         var catid;
         catid = $(this).attr("data-catid");
         catid = catid.slice(8);
@@ -58,12 +57,19 @@
                 },
                 success: function(data) {
                     console.log(data);
+                    $("#unfollow"+catid).text("Follow");
+                    $("#unfollow"+catid).attr({
+                        "class": "btn btn-success follow-user",
+                        "data-catid": `follow${catid}`,
+                        "id": `follow${catid}`,
+                        "text": "Follow",
+                    });
                 }
             }
         )
         
     });
-    $(".follow").click(function() {
+    $("body").on("click", "a.follow-user", function() {
         var catid;
         catid = $(this).attr("data-catid");
         catid = catid.slice(6);
@@ -76,6 +82,13 @@
                 },
                 success: function(data) {
                     console.log(data);
+                    $("#follow"+catid).text("Unfollow");
+                    $("#follow"+catid).attr({
+                        "class": "btn btn-danger unfollow-user",
+                        "data-catid": `unfollow${catid}`,
+                        "id": `unfollow${catid}`,
+                        "text": "Unfollow",
+                    })
                 }
             }
         )

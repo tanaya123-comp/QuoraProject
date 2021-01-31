@@ -1,0 +1,27 @@
+{%  extends 'QuoraApp/main.html' %}
+{% block content %}
+<div class="outer-container">
+        <div class="col-lg-6">
+            <h5 class="alert alert-primary">{{ request.user }}, your followers...</h5>
+            {% for each_user in followers %}
+                <div class="card mb-3" style="max-width: 540px; max-height: 240px;" id="card{{ each_user.id }}">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{ each_user.profile_pic.url }}" alt="Image" class="card-img-top">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ each_user.name }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+
+{% endblock scripts %}

@@ -666,11 +666,60 @@ def FollowUserHandle(request):
     member = request.user.member
     member2 = Member.objects.get(id=pk)
     member2.followers.add(member)
-    return HttpResponse('Success')
+    return HttpResponse('Success followed user')
 
 def UnfollowUserHandle(request):
     pk = request.GET['post_id']
     member = request.user.member
     member2 = Member.objects.get(id=pk)
     member2.followers.remove(member)
-    return HttpResponse('Success')
+    return HttpResponse('Success unfollowed user')
+
+def user_followers(request):
+    profile = request.user.member
+    followers = profile.followers.all()
+    context = {
+        'followers': followers,
+    }
+    return render(request, 'QuoraApp/MyUserFollowers.html', context)
+
+def visit_profile(request, pk):
+    profile = Member.objects.get(id=pk)
+    form = ProfileForm(instance=profile)
+
+    # Check whether that Member has Educational/Job Details
+    employee_detail = Employee.objects.filter(member__exact=profile)
+    student_detail = Student.objects.filter(member__exact=profile)
+
+    role = 'None'
+    qualification_form = None
+
+    if len(employee_detail):
+        # User is an employee
+        role = 'Employee'
+        qualification_form = EmployeeForm(instance=employee_detail[0])
+    elif len(student_detail):
+        # User is a student
+        role = 'Student'
+        qualification_form = StudentForm(instance=student_detail[0])
+
+    num_followers = profile.followers.count()
+    num_following = profile.member_set.count()
+
+    profile_followers = profile.followers.all()
+    me = request.user.member
+    do_i_follow = False
+    if me in profile_followers:
+        do_i_follow = True
+
+
+    context = {
+        'member': profile,
+        'form': form,
+        'role': role,
+        'q_form': qualification_form,
+        'num_followers': num_followers,
+        'num_following': num_following,
+        'do_i_follow': do_i_follow,
+    }
+    return render(request, 'QuoraApp/VisitProfile.html', context)

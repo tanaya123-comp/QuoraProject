@@ -5,7 +5,7 @@ from .views import (HomePage,Register,AnswerPage,TagPage, Logout, AskQuestion,
                         IndividualQuestion, Profile,upVote,downVote,submitAnswer,
                         following, UnfollowHandle, FollowHandle, MyAnswers,getupvote,
                         getdownvote, editAnswer, deleteAnswer,clearVote, user_followings,
-                        FollowUserHandle, UnfollowUserHandle)
+                        FollowUserHandle, UnfollowUserHandle, user_followers, visit_profile)
 
 urlpatterns = [
     path('',HomePage,name="HomePage"),
@@ -34,5 +34,7 @@ urlpatterns = [
     path('user_following/', user_followings, name='UserFollowings'),
     path('follow_user_handle/', FollowUserHandle, name='FollowUserHandle'),
     path('unfollow_user_handle/', UnfollowUserHandle, name='UnfollowUserHandle'),
+    path('user_followers/', user_followers, name='UserFollowers'),
+    path('profile/<str:pk>', visit_profile, name='VisitProfile')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

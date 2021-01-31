@@ -14,10 +14,10 @@
                         <h4 style="text-align: center;">{{ request.user }}</h4>
                         <p class="card-text">Date joined: {{request.user.date_joined}}</p>
                         <div style="display: flex;">
-                            <a href="{% url 'UserFollowings' %}" class="btn btn-primary" style="margin-bottom:  5px;">
+                            <a href="{% url 'UserFollowers' %}" class="btn btn-primary" style="margin-bottom:  5px;">
                                 Followers <span class="badge bg-secondary">{{ num_followers }}</span>
                             </a>
-                            <a href="#" class="btn btn-primary" style="margin-bottom:  5px;">
+                            <a href="{% url 'UserFollowings' %}" class="btn btn-primary" style="margin-bottom:  5px;">
                                 Following <span class="badge bg-secondary">{{ num_following }}</span>
                             </a>
                         </div>

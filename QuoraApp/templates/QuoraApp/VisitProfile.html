@@ -1,0 +1,109 @@
+{%  extends 'QuoraApp/main.html' %}
+{% block content %}
+
+        <!-- Container-body -->
+        <div class="outer-container-profile">
+
+            <div class="wrapper-div col-lg-12">
+                <!-- Profile pic + name + bio -->
+                <div class="col-lg-4 card profile-card mx-1">
+                        <img src="{{member.profile_pic.url}}"  class="card-img-top"/>
+                        <h4 style="text-align: center;">{{ member }}</h4>
+                        <p class="card-text">Date joined: {{member.user.date_joined}}</p>
+                        <div style="display: flex;">
+                            <div class="btn btn-primary" style="margin-bottom:  5px;">
+                                Followers <span class="badge bg-secondary">{{ num_followers }}</span>
+                            </div>
+                            <div  class="btn btn-primary" style="margin-bottom:  5px;">
+                                Following <span class="badge bg-secondary">{{ num_following }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>Full Name: {{ form.name.value }}</h6>
+                            <h6>Email: {{form.email.value}}</h6>
+                            <hr />
+                            {% if role == 'Student' %}
+                                <h4 style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">Education Details</h4>
+                                <h6>University: {{q_form.university.value}}</h6>
+                                <h6>Degree: {{q_form.degree.value}}</h6>
+                                <h6>Branch: {{q_form.branch.value}}</h6>
+                            {% elif role == 'Employee' %}
+                                <h4 style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">Education Details</h4>
+                                <h6>Company: {{q_form.company.value}}</h6>
+                                <h6>Job Post: {{q_form.job_post}}</h6>
+                                {% endif %}
+                        </div>
+                        {% if do_i_follow == True and member.id != request.user.member.id %}
+                            <a class="btn btn-danger unfollow-user"
+                            data-catid="unfollow{{ member.id }}"
+                            id="unfollow{{ member.id }}"
+                            style="color:white;"
+                            href="#">Unfollow
+                            </a>
+                        {% elif member.id != request.user.member.id %}
+                        <a class="btn btn-success follow-user"
+                           href="#"
+                           style="color:white;"
+                           id="follow{{ member.id }}"
+                           data-catid="follow{{ member.id }}">Follow
+                        </a>
+                        {% endif %}
+                </div>
+                
+            </div>
+        </div>
+
+{% endblock %}
+{% block scripts %}
+
+    $("body").on("click", "a.unfollow-user", function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+        catid = catid.slice(8);
+        $.ajax(
+            {
+                type: "GET",
+                url: "/unfollow_user_handle",
+                data: {
+                    post_id: catid
+                },
+                success: function(data) {
+                    console.log(data);
+                    $("#unfollow"+catid).text("Follow");
+                    $("#unfollow"+catid).attr({
+                        "class": "btn btn-success follow-user",
+                        "data-catid": `follow${catid}`,
+                        "id": `follow${catid}`,
+                        "text": "Follow",
+                    });
+                }
+            }
+        )
+
+    });
+    $("body").on("click", "a.follow-user", function() {
+        var catid;
+        catid = $(this).attr("data-catid");
+        catid = catid.slice(6);
+        $.ajax(
+            {
+                type: "GET",
+                url: "/follow_user_handle",
+                data:{
+                    post_id: catid
+                },
+                success: function(data) {
+                    console.log(data);
+                    $("#follow"+catid).text("Unfollow");
+                    $("#follow"+catid).attr({
+                        "class": "btn btn-danger unfollow-user",
+                        "data-catid": `unfollow${catid}`,
+                        "id": `unfollow${catid}`,
+                        "text": "Unfollow",
+                    })
+                }
+            }
+        )
+    })
+
+{% endblock scripts %}
