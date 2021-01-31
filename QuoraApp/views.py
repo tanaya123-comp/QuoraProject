@@ -37,6 +37,23 @@ def HomePage(request):
     tag=Tag.objects.all()
     following=Following.objects.filter(member__exact=request.user.member)
 
+    taglist=[]
+
+    for i in tag:
+        taglist.append(i.name)
+
+    users=Member.objects.all()
+    userlist=[]
+    for i in users:
+        userlist.append(i.name)
+
+
+    questions=Question.objects.all()
+
+    questionlist=[]
+
+    for i in questions:
+        questionlist.append(i.description)
 
 
 
@@ -49,22 +66,32 @@ def HomePage(request):
 
 
 
+
+
+
     if tagname is "":
         answers2 = Answer.objects.filter(tag__name='')
         for i in following:
             answers2 = answers2 | Answer.objects.filter(tag__name=i.tag.name) #union operator is used to combine queryset
 
-        print(answers2)
+        #print(answers2)
+        answers=answers2
         answers = answers2.order_by('-creationTime') # oder by is used to order the objects in queryset by any of it's attribute prefix it by - for descending
 
-    elif tagname is not None:
+    elif tagname  in taglist:
         answers=Answer.objects.filter(tag__name=tagname)
+        answers = answers.order_by('-creationTime')
+
+    elif tagname in questionlist:
+        answers=Answer.objects.filter(question__description=tagname)
+        answers = answers.order_by('-creationTime')
     else:
         answers2 = Answer.objects.filter(tag__name='')
         for i in following:
             answers2=answers2|Answer.objects.filter(tag__name=i.tag.name)
 
-        print(answers2)
+        #print(answers2)
+        answers=answers2
         answers=answers2.order_by('-creationTime')
 
     page = request.GET.get('page', 1)

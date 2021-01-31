@@ -39,6 +39,8 @@ class Question(models.Model):
         return self.description
 
 
+
+
 class Answer(models.Model):
     id = models.AutoField(primary_key=True)
     question=models.ForeignKey(Question,null=True,on_delete=models.SET_NULL)
@@ -46,6 +48,9 @@ class Answer(models.Model):
     answer=RichTextField(blank=True,null=True)
     answeredBy=models.ForeignKey(Member,null=True,on_delete=models.SET_NULL)
     creationTime=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        order_with_respect_to = 'question'
     
     
 class Vote(models.Model):
