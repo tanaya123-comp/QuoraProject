@@ -85,6 +85,11 @@ def HomePage(request):
     elif tagname in questionlist:
         answers=Answer.objects.filter(question__description=tagname)
         answers = answers.order_by('-creationTime')
+
+    elif tagname in userlist:
+        usr=Member.objects.get(name=tagname)
+        return redirect('VisitProfile',pk=usr.id)
+
     else:
         answers2 = Answer.objects.filter(tag__name='')
         for i in following:
@@ -92,6 +97,7 @@ def HomePage(request):
 
         #print(answers2)
         answers=answers2
+
         answers=answers2.order_by('-creationTime')
 
     page = request.GET.get('page', 1)
